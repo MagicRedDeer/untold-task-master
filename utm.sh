@@ -22,6 +22,17 @@ UTM_COMMANDS=(
   "cd"
 )
 
+UTM_DIRECTORY=$(realpath "${BASH_SOURCE[0]}")
+UTM_DIRECTORY=$(dirname "$UTM_DIRECTORY")
+
+source "$UTM_DIRECTORY/_utm_create.sh"
+
+function _utm_is_valid_command() {
+  local delimiter=" "
+  local command=$1
+  echo "${UTM_COMMANDS[*]}" | tr "$delimiter" '\n' | grep -F -q -x "$command"
+}
+
 function _utm_completions() {
   local num_words
   local last_word
@@ -33,9 +44,37 @@ function _utm_completions() {
   fi
 }
 
+function _utm_usage() {
+  echo "Usage:"
+  echo "======"
+  echo "$UTM_BASE_COMMAND <command> <options>"
+  echo 
+  echo "Valid commands:"
+  echo "---------------"
+  local valid_command
+  for valid_command in "${UTM_COMMANDS[@]}"
+  do
+    echo "$valid_command"
+  done
+}
+
 function utm() {
-  echo "Welcome to UTM"
-  echo $UTM_BASE_COMMAND "$*"
+  local command=$1
+  if ! _utm_is_valid_command "$1"
+  then
+    echo "ERROR: Invalid command ... $command"
+    echo
+    _utm_usage
+    return 1
+  fi
+  case $command in 
+    "create")
+      shift
+      _utm_create "$@"
+      return $?
+      ;;
+  esac
+  echo $UTM_BASE_COMMAND "$command"
 }
 
 complete -F _utm_completions utm
