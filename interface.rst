@@ -245,7 +245,7 @@ Command for adding and removing repo clones to the task
 Sub-Commands:
 *************
 
-utm clone add
+utm repo add
 +++++++++++++++
 
 It will clone the package to the appropriate directory
@@ -253,14 +253,14 @@ It will clone the package to the appropriate directory
 Completion provided for all possible names of the repositories
 Should be able to take multiple package names
 
-utm clone rm
+utm repo rm
 +++++++++++++++
 It will delete the clone
 
 Completion provided from all the existing repos
 Should be able to take multiple package names
 
-utm clone list
+utm repo list
 ++++++++++++++++
 
 It will list all packages cloned in the task
