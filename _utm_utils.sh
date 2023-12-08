@@ -13,6 +13,18 @@ _utm_location_in_array() {
   for i in "${!arr[@]}"; do
      if [[ "${arr[$i]}" = "${value}" ]]; then
          echo "${i}";
+         break
      fi
+  done
+}
+
+_utm_search() {
+  local expr=$1
+  shift
+  local values=("$@") 
+  local val
+  for val in "${values[@]}"
+  do
+    [[ "$val" =~ $expr ]] && echo "$val"
   done
 }

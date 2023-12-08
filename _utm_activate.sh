@@ -5,7 +5,8 @@ _utm_activate_completions() {
   local num_words=${#words[@]}
   if [ "$num_words" -eq 1 ]
   then
-    compgen -W "$(_utm_list)" "${words[0]}"
+    # shellcheck disable=SC2046
+    _utm_search "${words[0]}" $(_utm_list) 
   fi
 }
 

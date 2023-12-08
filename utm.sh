@@ -44,6 +44,7 @@ function _utm_completions() {
 
   if [ "$last_word" == "$UTM_BASE_COMMAND" ]
   then
+    # shellcheck disable=SC2207
     COMPREPLY=($(compgen -W "${UTM_COMMANDS[*]}" "${COMP_WORDS[$num_words-1]}"))
     return
   fi
@@ -60,6 +61,7 @@ function _utm_completions() {
 
     case $command in
       "activate")
+        # shellcheck disable=SC2207
         COMPREPLY=($(_utm_activate_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
         return
     esac
@@ -106,7 +108,7 @@ function utm() {
       return $?
       ;;
   esac
-  echo $UTM_BASE_COMMAND "$command"
+  echo $UTM_BASE_COMMAND "$command" NOT IMPLEMENTED
 }
 
 complete -F _utm_completions utm
