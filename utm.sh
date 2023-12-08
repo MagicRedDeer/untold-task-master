@@ -22,6 +22,12 @@ UTM_COMMANDS=(
   "cd"
 )
 
+UTM_VERBOSE=
+UTM_FLAGS=(
+  "--verbose" "-v"
+  "--help" "-h"
+)
+
 UTM_DIRECTORY=$(realpath "${BASH_SOURCE[0]}")
 UTM_DIRECTORY=$(dirname "$UTM_DIRECTORY")
 
@@ -37,41 +43,58 @@ function _utm_is_valid_command() {
 }
 
 function _utm_completions() {
-  local num_words
-  local last_word
-  num_words=${#COMP_WORDS[@]} 
-  last_word=${COMP_WORDS[$num_words-2]}
-
-  if [ "$last_word" == "$UTM_BASE_COMMAND" ]
-  then
-    # shellcheck disable=SC2207
-    COMPREPLY=($(compgen -W "${UTM_COMMANDS[*]}" "${COMP_WORDS[$num_words-1]}"))
-    return
-  fi
-
   local utm_loc
+  local next_loc
+  local command
+  local num_words=${#COMP_WORDS[@]} 
+
   utm_loc=$(_utm_location_in_array "$UTM_BASE_COMMAND" "${COMP_WORDS[@]}")
-  if [ -n "$utm_loc" ]
-  then
-    local next_loc
-    (("next_loc = $utm_loc + 1"))
 
-    local command
-    command=${COMP_WORDS[$next_loc]}
+  # Base command not found this will probably never happen at runtime
+  [ -z "$utm_loc" ] && return 1
 
+  (("next_loc = $next_loc + 1"))
+  command=${COMP_WORDS[$next_loc]}
+
+  while [ "$((next_loc + 1))" -lt "$num_words" ] ; do
+
+    # if the next word is one of the commands kick it down the line
     case $command in
       "activate")
         # shellcheck disable=SC2207
         COMPREPLY=($(_utm_activate_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
         return
     esac
+
+    # if its not one of the flags there is something wrong ... abort
+    if ! _utm_obj_is_in_array "$command" "${UTM_FLAGS[@]}"; then
+      COMPREPLY=(NO FLAGS)
+      return
+    fi
+
+    # take up the next word
+    (("next_loc = $next_loc + 1"))
+    command=${COMP_WORDS[$next_loc]}
+
+  done
+
+  # we have reached the last word provide completion now
+  if [[ "$command" =~ ^- ]]; then
+    # shellcheck disable=SC2207
+    COMPREPLY=($(compgen -W "${UTM_FLAGS[*]}" -- "${command}"))  # flags
+    return
+  else  # complete commands
+    # shellcheck disable=SC2207
+    COMPREPLY=($(compgen -W "${UTM_COMMANDS[*]}" "${command}"))
+    return
   fi
 }
 
 function _utm_usage() {
+  echo
   echo "Usage:"
   echo "======"
-  echo "$UTM_BASE_COMMAND <command> <options>"
+  echo "$UTM_BASE_COMMAND [--verbose|-v] <command> <options>"
   echo 
   echo "Valid commands:"
   echo "---------------"
@@ -80,10 +103,37 @@ function _utm_usage() {
   do
     echo "$valid_command"
   done
+  echo
 }
 
 function utm() {
+  local arg=$1
+
+  while [[ "$arg" =~ ^- ]]; do
+    case $arg in
+      --verbose|-v)
+        export UTM_VERBOSE=1;;
+      --help|-h)
+        _utm_usage
+        return 0;;
+      *)
+        export UTM_VERBOSE=
+        echo "ERROR: invalid argument ... $arg"
+        _utm_usage
+        return 1
+        ;;
+    esac
+    shift
+    arg=$1
+  done
+
   local command=$1
+  if [ -z "$command" ]; then
+    echo "ERROR: No valid command found ..."
+    _utm_usage
+    return 0
+  fi
+
   if ! _utm_is_valid_command "$1"
   then
     echo "ERROR: Invalid command ... $command"
@@ -91,6 +141,7 @@ function utm() {
     _utm_usage
     return 1
   fi
+
   case $command in 
     "create")
       shift
@@ -108,6 +159,7 @@ function utm() {
       return $?
       ;;
   esac
+
   echo $UTM_BASE_COMMAND "$command" NOT IMPLEMENTED
 }
 
