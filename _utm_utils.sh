@@ -28,3 +28,14 @@ _utm_search() {
     [[ "$val" =~ $expr ]] && echo "$val"
   done
 }
+
+_utm_obj_is_in_array() {
+  local obj=$1
+  shift
+  local values=("$@") 
+  local val
+  for val in "${values[@]}"; do
+    [[ "$obj" = "$val" ]] && return 0
+  done
+  return 1
+}
