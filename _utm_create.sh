@@ -38,6 +38,9 @@ _utm_create() {
   json_file="$task_dir/.utm.json"
 
   # create task directory
+  _utm_log_debug "Creating directory '$task_dir' ..."
   mkdir -p "$task_dir" > /dev/null
+
+  _utm_log_debug "Adding json file at '$json_file' ..."
   touch "$json_file"
 }

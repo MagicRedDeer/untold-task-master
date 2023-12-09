@@ -46,7 +46,7 @@ _utm_in_array() {
 }
 
 _utm_log_debug() {
-  [ -z "$UTM_VERBOSE" ] || echo "DEBUG:" "$@" 
+  [ -z "$_UTM_VERBOSE" ] || echo "DEBUG:" "$@" 
 }
 
 _utm_log_error() {

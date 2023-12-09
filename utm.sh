@@ -112,13 +112,13 @@ function _utm_usage() {
 function utm() {
   local arg=$1
 
-  _UTM_VERBOSE=
+  export _UTM_VERBOSE=
 
   # process options
   while [[ "$arg" =~ ^- ]]; do
     case $arg in
       --verbose|-v)
-        _UTM_VERBOSE=1;;
+        export _UTM_VERBOSE=1;;
       --help|-h)
         _utm_usage "info"
         return 0;;
