@@ -1,11 +1,14 @@
 #!/bin/bash
 
+# Check if the provided task is valid
 _utm_task_is_valid() {
+  local task="$1"
   local tasks
   tasks=$(_utm_list)
-  echo "$tasks" | tr " " '\n' | grep -F -q -x "$1"
+  echo "$tasks" | tr " " '\n' | grep -F -q -x "$task"
 }
 
+# return the location of an object in an array
 _utm_location_in_array() {
   local value=$1
   shift
@@ -18,6 +21,7 @@ _utm_location_in_array() {
   done
 }
 
+# Search for a matching statement in an array
 _utm_search() {
   local expr=$1
   shift
@@ -29,7 +33,8 @@ _utm_search() {
   done
 }
 
-_utm_obj_is_in_array() {
+# Check if object is in an array
+_utm_in_array() {
   local obj=$1
   shift
   local values=("$@") 

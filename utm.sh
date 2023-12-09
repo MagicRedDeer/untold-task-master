@@ -109,6 +109,7 @@ function _utm_usage() {
 function utm() {
   local arg=$1
 
+  # process options
   while [[ "$arg" =~ ^- ]]; do
     case $arg in
       --verbose|-v)
@@ -127,6 +128,7 @@ function utm() {
     arg=$1
   done
 
+  # process commands
   local command=$1
   if [ -z "$command" ]; then
     echo "ERROR: No valid command found ..."
