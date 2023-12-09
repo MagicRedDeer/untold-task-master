@@ -16,10 +16,26 @@ _utm_dir_completions() {
 _utm_dir() {
   local task_name="${1}"
 
+  [ -z "$task_name" ] && task_name=$(_utm_active)
+
   if ! _utm_task_is_valid "$task_name"; then
     _utm_log_error "Task '$task_name' does not exist!"
     return 1
   fi
 
   echo "$UTM_TASKDIR/$task_name"
+}
+
+
+_utm_cd() {
+  local task_name="${1}"
+
+  [ -z "$task_name" ] && task_name=$(_utm_active)
+
+  if ! _utm_task_is_valid "$task_name"; then
+    _utm_log_error "Task '$task_name' does not exist!"
+    return 1
+  fi
+
+  cd "$UTM_TASKDIR/$task_name" || return 1
 }

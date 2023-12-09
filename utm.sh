@@ -63,6 +63,10 @@ function _utm_completions() {
         # shellcheck disable=SC2207
         COMPREPLY=($(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
         return $?;;
+      "cd")
+        # shellcheck disable=SC2207
+        COMPREPLY=($(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        return $?;;
     esac
 
     # if its not one of the flags there is something wrong ... abort
@@ -103,7 +107,6 @@ function _utm_usage() {
 function utm() {
   local arg=$1
 
-  global _UTM_VERBOSE
   _UTM_VERBOSE=
 
   # process options
@@ -158,6 +161,16 @@ function utm() {
     "dir")
       shift
       _utm_dir "$@"
+      return $?
+      ;;
+    "cd")
+      shift
+      _utm_cd "$@"
+      return $?
+      ;;
+    "active")
+      shift
+      _utm_active "$@"
       return $?
       ;;
   esac

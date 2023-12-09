@@ -2,6 +2,7 @@
 
 _UTM_FORBIDDEN_TASK_NAMES=(
   "CurrentTask" "currenttask"
+  "ActiveTask" "activetask"
   "current" "active"
   "cd" "run" "build" "package" "repo"
   "create" "remove" "activate"
