@@ -16,12 +16,12 @@ _utm_create() {
   local task_name="${1}"
 
   if [ -z "$task_name" ]; then
-    utm_log_error "No task name found!"
+    _utm_log_error "No task name provided!"
     return 1
   fi
 
   if _utm_in_array "$task_name" "${_UTM_FORBIDDEN_TASK_NAMES[@]}"; then
-    utm_log_error "You may not name a task '$task_name'"
+    _utm_log_error "You may not name a task '$task_name'"
     return 1
   fi
 
