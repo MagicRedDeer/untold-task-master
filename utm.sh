@@ -1,45 +1,40 @@
 #!/bin/bash
-UTM_TASKDIR=${UTM_TASKDIR:-"$HOME/Workspace/Tasks"}
-UTM_BUILD_DIR=${UTM_BUILD_DIR:-"$HOME/.task_builds"}
-UTM_BASE_COMMAND=utm
-UTM_COMMANDS=(
-  "create"
-  "remove"
-  "activate"
-  "retire"
-  "revive"
-  "active"
-  "list"
-  "package"
-  "build"
-  "run"
-  "repo"
-  "lf"
-  "config"
-  "tmux"
-  "attach"
-  "dir"
-  "cd"
+UTM_TASKDIR=${UTM_TASKDIR:-"$HOME/Workspace/UTM/Tasks"}
+UTM_BUILD_DIR=${UTM_BUILD_DIR:-"$HOME/Workspace/UTM/Builds"}
+
+_UTM_BASE_COMMAND=utm
+_UTM_JSON_FILENAME=.utm.json
+
+_UTM_COMMANDS=(
+  "create" "remove" "activate"
+  "retire" "revive"
+  "active" "list"
+  "package" "build" "run"
+  "repo" "lf" "config"
+  "tmux" "attach"
+  "dir" "cd"
 )
 
-UTM_VERBOSE=
-UTM_FLAGS=(
+_UTM_VERBOSE=
+_UTM_FLAGS=(
+  # for completions
   "--verbose" "-v"
   "--help" "-h"
 )
 
-UTM_DIRECTORY=$(realpath "${BASH_SOURCE[0]}")
-UTM_DIRECTORY=$(dirname "$UTM_DIRECTORY")
+_UTM_DIRECTORY=$(realpath "${BASH_SOURCE[0]}")
+_UTM_DIRECTORY=$(dirname "$_UTM_DIRECTORY")
 
-source "$UTM_DIRECTORY/_utm_utils.sh"
-source "$UTM_DIRECTORY/_utm_create.sh"
-source "$UTM_DIRECTORY/_utm_activate.sh"
-source "$UTM_DIRECTORY/_utm_list.sh"
+source "$_UTM_DIRECTORY/_utm_utils.sh"
+source "$_UTM_DIRECTORY/_utm_create.sh"
+source "$_UTM_DIRECTORY/_utm_activate.sh"
+source "$_UTM_DIRECTORY/_utm_list.sh"
+source "$_UTM_DIRECTORY/_utm_dir.sh"
 
 function _utm_is_valid_command() {
   local delimiter=" "
   local command=$1
-  echo "${UTM_COMMANDS[*]}" | tr "$delimiter" '\n' | grep -F -q -x "$command"
+  echo "${_UTM_COMMANDS[*]}" | tr "$delimiter" '\n' | grep -F -q -x "$command"
 }
 
 function _utm_completions() {
@@ -48,7 +43,7 @@ function _utm_completions() {
   local hint
   local num_words=${#COMP_WORDS[@]} 
 
-  utm_loc=$(_utm_location_in_array "$UTM_BASE_COMMAND" "${COMP_WORDS[@]}")
+  utm_loc=$(_utm_find "$_UTM_BASE_COMMAND" "${COMP_WORDS[@]}")
 
   # Base command not found this will probably never happen at runtime
   [ -z "$utm_loc" ] && return 1
@@ -63,11 +58,15 @@ function _utm_completions() {
       "activate")
         # shellcheck disable=SC2207
         COMPREPLY=($(_utm_activate_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
-        return
+        return $?;;
+      "dir")
+        # shellcheck disable=SC2207
+        COMPREPLY=($(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        return $?;;
     esac
 
     # if its not one of the flags there is something wrong ... abort
-    if ! _utm_in_array "$hint" "${UTM_FLAGS[@]}"; then
+    if ! _utm_in_array "$hint" "${_UTM_FLAGS[@]}"; then
       return 1
     fi
 
@@ -78,21 +77,10 @@ function _utm_completions() {
   done
 
   # we have reached the last word provide completion now
-  #
-
   # shellcheck disable=SC2207
-  COMPREPLY=($(_utm_suggest "$hint" "${UTM_COMMANDS[*]}" "${UTM_FLAGS[*]}"))
+  COMPREPLY=($(_utm_suggest "$hint" "${_UTM_COMMANDS[*]}" "${_UTM_FLAGS[*]}"))
   return
 
-  # if [[ "$hint" =~ ^- ]]; then
-  #   # shellcheck disable=SC2207
-  #   COMPREPLY=($(compgen -W "${UTM_FLAGS[*]}" -- "${hint}"))  # flags
-  #   return
-  # else  # complete commands
-  #   # shellcheck disable=SC2207
-  #   COMPREPLY=($(compgen -W "${UTM_COMMANDS[*]}" "${hint}"))
-  #   return
-  # fi
 }
 
 function _utm_usage() {
@@ -100,12 +88,12 @@ function _utm_usage() {
   _utm_echos "$s"
   _utm_echos "$s" "Usage:"
   _utm_echos "$s" "======"
-  _utm_echos "$s" "$UTM_BASE_COMMAND [$(_utm_join "|" "${UTM_FLAGS[*]}")] <command> <options>"
+  _utm_echos "$s" "$_UTM_BASE_COMMAND [$(_utm_join "|" "${_UTM_FLAGS[*]}")] <command> <options>"
   _utm_echos "$s" 
   _utm_echos "$s" "Valid commands:"
   _utm_echos "$s" "---------------"
   local valid_command
-  for valid_command in "${UTM_COMMANDS[@]}"
+  for valid_command in "${_UTM_COMMANDS[@]}"
   do
     _utm_echos "$s" "$valid_command"
   done
@@ -115,16 +103,18 @@ function _utm_usage() {
 function utm() {
   local arg=$1
 
+  global _UTM_VERBOSE
+  _UTM_VERBOSE=
+
   # process options
   while [[ "$arg" =~ ^- ]]; do
     case $arg in
       --verbose|-v)
-        export UTM_VERBOSE=1;;
+        _UTM_VERBOSE=1;;
       --help|-h)
         _utm_usage "info"
         return 0;;
       *)
-        export UTM_VERBOSE=
         _utm_log_error "Invalid argument ... $arg"
         _utm_usage "error"
         return 1
@@ -165,9 +155,14 @@ function utm() {
       _utm_list "$@"
       return $?
       ;;
+    "dir")
+      shift
+      _utm_dir "$@"
+      return $?
+      ;;
   esac
 
-  _utm_echo_error "$UTM_BASE_COMMAND $command NOT IMPLEMENTED"
+  _utm_log_error "$_UTM_BASE_COMMAND $command NOT IMPLEMENTED"
 }
 
 complete -F _utm_completions utm

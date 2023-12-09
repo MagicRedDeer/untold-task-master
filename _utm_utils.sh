@@ -9,7 +9,7 @@ _utm_task_is_valid() {
 }
 
 # return the location of an object in an array
-_utm_location_in_array() {
+_utm_find() {
   local value=$1
   shift
   local arr=("$@")

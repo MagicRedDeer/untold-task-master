@@ -6,6 +6,7 @@ _utm_list() {
   do
     [ "$name" != "$UTM_TASKDIR/CurrentTask" ] || continue
     [ -d "$name" ] || continue
+    [ -f "$name/$_UTM_JSON_FILENAME" ] || continue
     basename "$name"
   done
 }
