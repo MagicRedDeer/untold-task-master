@@ -30,6 +30,7 @@ source "$_UTM_DIRECTORY/_utm_create.sh"
 source "$_UTM_DIRECTORY/_utm_activate.sh"
 source "$_UTM_DIRECTORY/_utm_list.sh"
 source "$_UTM_DIRECTORY/_utm_dir.sh"
+source "$_UTM_DIRECTORY/_utm_remove.sh"
 
 function _utm_is_valid_command() {
   local delimiter=" "
@@ -66,6 +67,10 @@ function _utm_completions() {
       "cd")
         # shellcheck disable=SC2207
         COMPREPLY=($(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        return $?;;
+      "remove")
+        # shellcheck disable=SC2207
+        COMPREPLY=($(_utm_remove_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
         return $?;;
     esac
 
@@ -171,6 +176,11 @@ function utm() {
     "active")
       shift
       _utm_active "$@"
+      return $?
+      ;;
+    "remove")
+      shift
+      _utm_remove "$@"
       return $?
       ;;
   esac
