@@ -1,8 +1,6 @@
 #!/bin/bash
 
-UTM_ACTIVATE_FLAGS=(
-  "--expr"
-)
+UTM_ACTIVATE_FLAGS=()
 
 _utm_activate_completions() {
   local words=("$@")
@@ -33,13 +31,13 @@ _utm_activate() {
   fi
 
   if [ -z "$task_name" ]; then
-    echo No task name provided
+    _utm_log_error "No task name provided"
     return 1
   elif _utm_task_is_valid "$task_name"; then
     # "$USER_TASKDIR/$task_name/task_manage" activate
-    echo activating "$task_name" ...
+    _utm_log_debug "activating '$task_name' ..."
   else
-    echo "$task_name is not a valid task"
+    _utm_log_error "'$task_name' is not a valid task"
     return 1
   fi
 }

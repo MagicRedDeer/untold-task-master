@@ -44,3 +44,49 @@ _utm_in_array() {
   done
   return 1
 }
+
+_utm_log_debug() {
+  [ -z "$UTM_VERBOSE" ] || echo "DEBUG:" "$@" 
+}
+
+_utm_log_error() {
+  >&2 echo "ERROR:" "$@"
+}
+
+_utm_log_info() {
+  echo "$@"
+}
+
+_utm_echos() {
+  local stream=${1:-info}
+  shift
+  [[ "$stream" == "error" ]] && >&2 echo "$@" && return
+  [[ "$stream" == "info" ]] && echo "$@" && return
+  return 1
+}
+
+_utm_suggest() {
+  local word="${1}"
+  local terms
+  local flags
+
+  IPS=" " read -r -a terms <<< "${2}"
+  IPS=" " read -r -a flags <<< "${3}"
+  
+  if [[ "$word" =~ ^- ]]; then
+    compgen -W "${flags[*]}" -- "${word}"
+  elif [[ "$word" =~ ^~ ]]; then
+    _utm_search "${word:1}" "${terms[@]}"
+  else
+    compgen -W "${terms[*]}" -- "${word}"
+  fi
+}
+
+_utm_join () {
+  local sep="${1}"
+  shift
+  local str_array
+  read -r -a str_array <<< "$@"
+
+  echo "${str_array[*]}" | tr " " "$sep"
+}

@@ -1,6 +1,6 @@
 #!/bin/bash
 
 _utm_create() {
-  echo "utm create from inside source file"
-  echo "$UTM_BASE_COMMAND" create "$*"
+  _utm_info "utm create from inside source file"
+  _utm_info "$UTM_BASE_COMMAND" create "$*"
 }
