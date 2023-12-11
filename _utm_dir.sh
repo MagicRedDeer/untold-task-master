@@ -18,6 +18,12 @@ _utm_dir() {
 
   [ -z "$task_name" ] && task_name=$(_utm_active)
 
+
+  if [ -z "$task_name" ]; then
+    _utm_log_error "No task name provided"
+    return 1
+  fi
+
   if ! _utm_task_is_valid "$task_name"; then
     _utm_log_error "Task '$task_name' does not exist!"
     return 1
@@ -31,6 +37,11 @@ _utm_cd() {
   local task_name="${1}"
 
   [ -z "$task_name" ] && task_name=$(_utm_active)
+
+  if [ -z "$task_name" ]; then
+    _utm_log_error "No task name provided"
+    return 1
+  fi
 
   if ! _utm_task_is_valid "$task_name"; then
     _utm_log_error "Task '$task_name' does not exist!"

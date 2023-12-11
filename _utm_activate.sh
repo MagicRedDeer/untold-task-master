@@ -1,6 +1,6 @@
 #!/bin/bash
 
-_UTM_ACTIVE_TASK=ActiveTask
+_UTM_ACTIVE_TASK=.active_task
 _UTM_ACTIVATE_FLAGS=()
 
 _utm_activate_completions() {
@@ -77,7 +77,7 @@ _utm_active () {
   local active_task_link="$UTM_TASKDIR/$_UTM_ACTIVE_TASK"
 
   if [ ! -h "$active_task_link" ]; then
-    echo "Cannot read current task" 
+    _utm_log_error "Cannot read active task" 
     return 1
   fi
 
