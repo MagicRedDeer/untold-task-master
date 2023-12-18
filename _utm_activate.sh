@@ -27,12 +27,19 @@ _utm_activate() {
   if [ -z "$task_name" ]; then
     _utm_log_error "No task name provided"
     return 1
-  elif _utm_task_is_valid "$task_name"; then
-    _utm_activate_perform "$task_name"
-  else
+  fi
+
+  if ! _utm_task_is_valid "$task_name"; then
     _utm_log_error "'$task_name' is not a valid task"
     return 1
   fi
+
+  if ! _utm_task_is_live "$task_name"; then
+    _utm_log_error "'$task_name' is not live!"
+    return 1
+  fi
+
+  _utm_activate_perform "$task_name"
 }
 
 _utm_activate_perform() {
