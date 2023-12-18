@@ -4,8 +4,33 @@
 _utm_task_is_valid() {
   local task="$1"
   local tasks
-  tasks=$(_utm_list)
+  tasks=$(_utm_list --all)
   echo "$tasks" | tr " " '\n' | grep -F -q -x "$task"
+}
+
+_utm_task_json_filepath() {
+  local task_name=$1
+  echo "$UTM_TASKDIR/$task_name/$_UTM_JSON_FILENAME"
+}
+
+_utm_task_status () {
+  local task_name=$1
+  local json_path
+  json_path=$(_utm_task_json_filepath "$task_name")
+  [[ -f "$json_path" ]] || return 1
+  jq '.status' "$json_path"
+}
+
+_utm_task_is_retired () {
+  task_status=$(_utm_task_status "$1")
+  [ "$task_status" == "\"retired\"" ] && return 0
+  return 1
+}
+
+_utm_task_is_live () {
+  task_status=$(_utm_task_status "$1")
+  [ "$task_status" == "\"live\"" ] && return 0
+  return 1
 }
 
 # return the location of an object in an array

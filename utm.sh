@@ -31,6 +31,8 @@ source "$_UTM_DIRECTORY/_utm_activate.sh"
 source "$_UTM_DIRECTORY/_utm_list.sh"
 source "$_UTM_DIRECTORY/_utm_dir.sh"
 source "$_UTM_DIRECTORY/_utm_remove.sh"
+source "$_UTM_DIRECTORY/_utm_retire.sh"
+source "$_UTM_DIRECTORY/_utm_revive.sh"
 
 function _utm_is_valid_command() {
   local delimiter=" "
@@ -71,6 +73,18 @@ function _utm_completions() {
       "remove")
         # shellcheck disable=SC2207
         COMPREPLY=($(_utm_remove_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        return $?;;
+      "list")
+        # shellcheck disable=SC2207
+        COMPREPLY=($(_utm_list_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        return $?;;
+      "retire")
+        # shellcheck disable=SC2207
+        COMPREPLY=($(_utm_retire_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        return $?;;
+      "revive")
+        # shellcheck disable=SC2207
+        COMPREPLY=($(_utm_revive_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
         return $?;;
     esac
 
@@ -181,6 +195,16 @@ function utm() {
     "remove")
       shift
       _utm_remove "$@"
+      return $?
+      ;;
+    "retire")
+      shift
+      _utm_retire "$@"
+      return $?
+      ;;
+    "revive")
+      shift
+      _utm_revive "$@"
       return $?
       ;;
   esac

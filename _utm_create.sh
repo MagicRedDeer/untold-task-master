@@ -35,7 +35,7 @@ _utm_create() {
   local task_dir
   local json_file_path
   task_dir="$UTM_TASKDIR/$task_name"
-  json_file_path="$task_dir/$_UTM_JSON_FILE_PATH"
+  json_file_path="$task_dir/$_UTM_JSON_FILENAME"
 
   # create task directory
   _utm_log_debug "Creating directory '$task_dir' ..."
@@ -44,6 +44,7 @@ _utm_create() {
   _utm_log_debug "Adding json file at '$json_file_path' ..."
   touch "$json_file_path"
 
+  _utm_log_debug _utm_initialize_utm_json "$task_name" "$json_file_path"
   _utm_initialize_utm_json "$task_name" "$json_file_path"
 }
 
@@ -56,9 +57,13 @@ _utm_initialize_utm_json() {
   fi
 
   _utm_log_debug "initializing file at '$json_file_path' ..."
-  jq \
+  json_content=$(jq \
     --arg task_name "$task_name" \
     -n \
     '{name: $task_name,
-      status: "live"}' >| "$json_file_path"
+      status: "live"}')
+  _utm_log_debug "json content:"
+  _utm_log_debug "$json_content"
+  _utm_log_debug "Writing to $json_file_path ..."
+  echo "$json_content" >| "$json_file_path"
 }
