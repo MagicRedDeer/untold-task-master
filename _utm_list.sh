@@ -17,7 +17,6 @@ _utm_list_completions() {
 _utm_list() {
   local flag=$1
   local task_status
-  local task_name
   local name
 
   if [ -n "$flag" ]; then
@@ -33,20 +32,20 @@ _utm_list() {
     [ -d "$name" ] || continue
     [ -f "$name/$_UTM_JSON_FILENAME" ] || continue
 
-    task_name=$(basename "$name")
-    task_status=$(_utm_task_status "$task_name")
 
     case "$flag" in
       --retired|-r)
+        task_status=$(_utm_task_status "$(basename "$name")")
         [ "$task_status" == "\"retired\"" ] || continue
         ;;
       --all|-a)
         ;;
       *)
+        task_status=$(_utm_task_status "$(basename "$name")")
         [ "$task_status" == "\"live\"" ] || continue
         ;;
     esac
 
-    echo "$task_name"
+    basename "$name"
   done
 }
