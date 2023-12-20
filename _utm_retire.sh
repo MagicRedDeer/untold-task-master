@@ -16,12 +16,7 @@ _utm_retire_completions () {
 _utm_retire () {
   local task_name=$1
 
-  if [ -z "$task_name" ]; then
-    _utm_log_error "No task name provided"
-    return 1
-  fi
-
-  if ! _utm_task_is_live "$task_name"; then
+  if ! _utm_task_check_live "$task_name"; then
     _utm_log_error "'$task_name' is not a live task"
   fi
 

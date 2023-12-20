@@ -33,6 +33,23 @@ _utm_task_is_live () {
   return 1
 }
 
+_utm_task_check_live() {
+  local task=$1
+  if [ -z "$task" ]; then
+    _utm_log_error "No task name provided"
+    return 1
+  fi
+  if ! _utm_task_is_valid "$task"; then
+    _utm_log_error "Task '$task' is not valid!"
+    return 1
+  fi
+  if ! _utm_task_is_live "$task"; then
+    _utm_log_error "Task '$task' is not live!"
+    return 1
+  fi
+  return 0
+}
+
 # return the location of an object in an array
 _utm_find() {
   local value=$1

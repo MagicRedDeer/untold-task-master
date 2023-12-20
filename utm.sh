@@ -33,6 +33,7 @@ source "$_UTM_DIRECTORY/_utm_dir.sh"
 source "$_UTM_DIRECTORY/_utm_remove.sh"
 source "$_UTM_DIRECTORY/_utm_retire.sh"
 source "$_UTM_DIRECTORY/_utm_revive.sh"
+source "$_UTM_DIRECTORY/_utm_repo.sh"
 
 function _utm_is_valid_command() {
   local delimiter=" "
@@ -85,6 +86,10 @@ function _utm_completions() {
       "revive")
         # shellcheck disable=SC2207
         COMPREPLY=($(_utm_revive_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        return $?;;
+      "repo")
+        # shellcheck disable=SC2207
+        COMPREPLY=($(_utm_repo_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
         return $?;;
     esac
 
@@ -205,6 +210,11 @@ function utm() {
     "revive")
       shift
       _utm_revive "$@"
+      return $?
+      ;;
+    "repo")
+      shift
+      _utm_repo "$@"
       return $?
       ;;
   esac
