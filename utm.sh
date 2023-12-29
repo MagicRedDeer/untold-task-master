@@ -4,6 +4,7 @@ UTM_BUILD_DIR=${UTM_BUILD_DIR:-"$HOME/Workspace/UTM/Builds"}
 
 _UTM_BASE_COMMAND=utm
 _UTM_JSON_FILENAME=.utm.json
+_UTM_PIPELINE_DIRNAME=.pipeline
 
 _UTM_COMMANDS=(
   "create" "remove" "activate"

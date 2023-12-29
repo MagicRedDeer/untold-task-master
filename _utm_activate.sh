@@ -67,17 +67,22 @@ _utm_create_active_task_link () {
 _utm_create_pipeline_link () {
   local task_dir=$1
   local pipeline_link="$HOME/pipeline"
-  _utm_log_debug "Creating link at $pipeline_link -> $task_dir" ...
+  local target_dir
+
+  target_dir=$(_utm_ensure_task_pipeline_base_dir "$task_dir")
 
   if [ -d "$pipeline_link" ]; then
+    _utm_log_debug "Removing existing directory at: $pipeline_link ..."
     rm -rf "$pipeline_link"
   fi
 
   if [ -h "$pipeline_link" ]; then
+    _utm_log_debug "Removing existing link at: $pipeline_link ..."
     rm "$pipeline_link"
   fi
 
-  ln -s -T "$task_dir" "$pipeline_link"
+  _utm_log_debug "Creating link at $pipeline_link -> $target_dir" ...
+  ln -s -T "$target_dir" "$pipeline_link"
 }
 
 _utm_active () {

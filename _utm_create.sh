@@ -46,6 +46,7 @@ _utm_create() {
 
   _utm_log_debug _utm_initialize_utm_json "$task_name" "$json_file_path"
   _utm_initialize_utm_json "$task_name" "$json_file_path"
+  _utm_ensure_task_pipeline_base_dir "$task_dir" > /dev/null
 }
 
 _utm_initialize_utm_json() {
@@ -66,4 +67,18 @@ _utm_initialize_utm_json() {
   _utm_log_debug "$json_content"
   _utm_log_debug "Writing to $json_file_path ..."
   echo "$json_content" >| "$json_file_path"
+}
+
+_utm_ensure_task_pipeline_base_dir() {
+  local task_dir="$1"
+  local task_pipeline_dir="$task_dir/$_UTM_PIPELINE_DIRNAME"
+
+  if [ ! -d "$task_pipeline_dir" ]; then
+    _utm_log_debug "Creating task pipeline base directory at: $task_pipeline_dir ..."
+    mkdir -p "$task_pipeline_dir" > /dev/null
+  fi
+
+  echo "$task_pipeline_dir"
+
+  return 1
 }
