@@ -8,20 +8,46 @@ _UTM_REPO_COMMANDS=(
 )
 
 _UTM_REPO_FLAGS=(
-  "--task"
+  "--task" "-t"
   "--help" "-h"
 )
 
 _UTM_REPO_COMMAND=repo
 _UTM_REPO_DIRNAME=repos
 
+source "$_UTM_DIRECTORY/_utm_repo_add.sh"
+
 _utm_repo_completions() {
   local words=("$@")  
+  local next_loc=0
+  local hint
   local num_words=${#words[@]}
 
-  if [ "$num_words" -eq 1 ]; then
-    _utm_suggest "${words[0]}" "${_UTM_REPO_COMMANDS[*]}" "${_UTM_REPO_FLAGS[*]}"
-  fi
+  hint=${words[$next_loc]}
+
+  while [ "$((next_loc + 1))" -lt "$num_words" ] ; do
+    case "${hint}" in
+      add)
+        _utm_repo_add_completions "${words[@]:1}"
+        return $?;;
+      --task|-t)
+        if [ "$((next_loc + 2))" == "$num_words" ]; then
+          local tasks
+          # shellcheck disable=SC2207
+          tasks=($(_utm_list))
+          _utm_suggest "${words[$next_loc + 1]}" "${tasks[*]}" ""
+          return $?
+        fi
+        ;;
+    esac
+
+    # take up the next word
+    (("next_loc = $next_loc + 1"))
+    hint=${words[$next_loc]}
+
+  done
+
+  _utm_suggest "${hint}" "${_UTM_REPO_COMMANDS[*]}" "${_UTM_REPO_FLAGS[*]}"
 }
 
 function _utm_repo_usage() {
@@ -54,7 +80,7 @@ _utm_repo() {
 
   while [[ "$arg" =~ ^- ]]; do
     case $arg in
-      --task)
+      --task|-t)
         shift
         task_name=$1
         ;;
@@ -86,7 +112,6 @@ _utm_repo() {
     return 1
   fi
 
-
   if [ -z "$task_name" ]; then
     _utm_log_debug "No task provided ... defaulting to active task!"
     task_name=$(_utm_active 2> /dev/null)
@@ -95,6 +120,7 @@ _utm_repo() {
   _utm_log_debug task_name is "'$task_name'" !
 
   if ! _utm_task_check_live "$task_name"; then
+    # the above function also prints the error so no need to print here
     return 1
   fi
 
@@ -102,7 +128,7 @@ _utm_repo() {
 
     "add")
       shift
-      _utm_repo_create "$task_name" "$@"
+      _utm_repo_add "$task_name" "$@"
       return $?
       ;;
 
@@ -121,13 +147,6 @@ _utm_repo() {
   esac
 
   _utm_log_error "$_UTM_BASE_COMMAND $_UTM_REPO_COMMAND $command NOT IMPLEMENTED!!"
-}
-
-_utm_repo_add() {
-  local task=$1
-  shift
-  local repos=("$@")
-  _utm_log_info "Adding repos " "${repos[@]}" in "'$task'"...
 }
 
 _utm_repo_remove() {
