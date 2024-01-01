@@ -1,3 +1,14 @@
+Untold Task Master
+==================
+
+My very own task manager at Untold
+
+.. image:: ./Untold_task_master.png
+   :width: 400
+   :alt: Cactus on task master's chair
+
+
+
 Basic Usage
 ===========
 
