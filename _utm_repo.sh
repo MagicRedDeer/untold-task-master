@@ -46,6 +46,9 @@ _utm_repo_completions() {
           return 1;
         fi
 
+        _UTM_REPO_FLAGS=( "${_UTM_REPO_FLAGS[@]/--task}" )
+        _UTM_REPO_FLAGS=( "${_UTM_REPO_FLAGS[@]/-t}" )
+
         # skip the next word (task name)
         (("next_loc = $next_loc + 2"))
         hint=${words[$next_loc]}
@@ -53,7 +56,7 @@ _utm_repo_completions() {
     esac
     
     # if its not one of the flags there is something wrong ... abort
-    if ! _utm_in_array "$hint" "${_UTM_FLAGS[@]}"; then
+    if ! _utm_in_array "$hint" "${_UTM_REPO_FLAGS[@]}"; then
       return 1
     fi
 
