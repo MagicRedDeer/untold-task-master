@@ -31,15 +31,31 @@ _utm_repo_completions() {
         _utm_repo_add_completions "${words[@]:1}"
         return $?;;
       --task|-t)
+        local tasks
+        # shellcheck disable=SC2207
+        tasks=($(_utm_list))
+
+        # suggest task completions
         if [ "$((next_loc + 2))" == "$num_words" ]; then
-          local tasks
-          # shellcheck disable=SC2207
-          tasks=($(_utm_list))
           _utm_suggest "${words[$next_loc + 1]}" "${tasks[*]}" ""
           return $?
         fi
-        ;;
+
+        # check if task name is valid
+        if ! _utm_in_array "${words[$next_loc + 1]}" "${tasks[@]}"; then
+          return 1;
+        fi
+
+        # skip the next word (task name)
+        (("next_loc = $next_loc + 2"))
+        hint=${words[$next_loc]}
+        continue;;
     esac
+    
+    # if its not one of the flags there is something wrong ... abort
+    if ! _utm_in_array "$hint" "${_UTM_FLAGS[@]}"; then
+      return 1
+    fi
 
     # take up the next word
     (("next_loc = $next_loc + 1"))
