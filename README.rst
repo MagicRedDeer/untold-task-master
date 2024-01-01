@@ -80,28 +80,20 @@ utm create
 
 This command creates a new task. The task is created live and made active.
 
-Example:
-********
+* Task of the given name should not exist otherwise it should Error out
+* No completions required
+* Optional: Add completions for words such as PIPE- PIPEPR- UTD-
 
 ::
 
   > utm create PIPE-2000_terminate_everything
   active task is set to: PIPE-2000_terminate_everything
 
-Behaviour:
-**********
-
-* Task of the given name should not exist otherwise it should Error out
-* No completions required
-* Optional: Add completions for words such as PIPE- PIPEPR- UTD-
 
 utm remove
 ----------
 
 This command removes an existing task. Deletes the entire contents from the disk.
-
-Behaviour:
-**********
 
 * Task should exist and not be active otherwise an error should be shown
 * Completion the word after utm remove (fuzzily) after remove with all existing
@@ -114,9 +106,6 @@ Retire the provided task. It will not show up in activate completions and
 live task lists. It will not longer be possible to make the task active
 unless revived using the `utm revive` command.
 
-Behaviour:
-**********
-
 * Provided task should exist and also be active
 * Completions provided with live tasks only
 
@@ -125,8 +114,6 @@ utm revive
 
 Revive a retired task. 
 
-Behaviour:
-**********
 * Provided task should exist and be retired
 * Completions provided with retired tasks only
 
@@ -136,8 +123,6 @@ utm activate
 
 Make the provided task active
 
-Behaviour:
-**********
 * Provided task should exist and be activte
 * Completions provided with live tasks only
 
@@ -145,16 +130,14 @@ Behaviour:
 utm active
 ----------
 
-provide the name of the currently active task.
+Prints the name of the currently active task.
 
 
 utm list
 --------
 
-Provide a list of existing tasks
+Prints a list of existing tasks
 
-Behaviour
-*********
 * If no flag is provided list all live tasks only
 * If the `--retired` or `-r` flag is provided list all retired tasks.
 * If the `--all` or `-a` flag is provided list all existing tasks.
@@ -173,9 +156,6 @@ utm package
 -----------
 
 Command for adding and removal of packages inside the task.  
-
-Sub-Commands:
-*************
 
 utm package add
 +++++++++++++++
@@ -208,18 +188,16 @@ utm build
 Create a lionfish build of the task in the task build directory. Builds are
 arranged by tasks and timestamps
 
-Usage
-*****
-The following flags are acceptable
-
-::
-
-  > utm build -n test_build
+The following flags are acceptable:
 
 --name or -n
   name of the current build. If the name is not provided build will be created
   with a timestamp anyway. **live** and **latest** are not acceptable. Should
   be a valid file/directory name.
+
+::
+
+  > utm build -n test_build
 
 --deploy or -d
   This will deploy the **latest** or the provided build to the given directory
@@ -233,29 +211,22 @@ utm run
 -------
 
 Run the provided command in the given build. If no build is provided it
-defaults to the **live** build.
+defaults to the **live** build. Uses lionfish under the hood!
 
-Uses lionfish under the hood
-
-Usage
-*****
-
-::
-
-  > utm run --build my_build "stem-ingest -e"
 
 The following flags are accepted:
 
 --build or -b
   The name of the build to run with. Completed with all existing build names.
 
+::
+
+  > utm run --build my_build "stem-ingest -e"
+
 utm repo
 ---------
 
 Command for adding and removing repo clones to the task
-
-Sub-Commands:
-*************
 
 utm repo add
 +++++++++++++++
@@ -280,9 +251,10 @@ It will list all packages cloned in the task
 
 utm lf
 -------
+Wraps lf for the current task
 
-utm config
-----------
+utm pipeline-config
+--------------------
 For writing out pipeline-config files
 
 utm tmux
@@ -310,4 +282,5 @@ Dependencies
 * untold_shell
 * jq
 * realpath
+* tmux
 * other shell utilities
