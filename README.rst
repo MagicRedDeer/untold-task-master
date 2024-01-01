@@ -1,9 +1,9 @@
 Basic Usage
 ===========
 
-```bash
+::bash
+
   > utm <command> <options>
-```
 
 Concepts
 ========
@@ -71,10 +71,11 @@ This command creates a new task. The task is created live and made active.
 
 Example:
 ********
-```bash
-> utm create PIPE-2000_terminate_everything
-active task is set to: PIPE-2000_terminate_everything
-```
+
+::bash
+
+  > utm create PIPE-2000_terminate_everything
+  active task is set to: PIPE-2000_terminate_everything
 
 Behaviour:
 **********
@@ -200,9 +201,9 @@ Usage
 *****
 The following flags are acceptable
 
-```
+::bash
+
   > utm build -n test_build
-```
 
 --name or -n
   name of the current build. If the name is not provided build will be created
@@ -213,9 +214,9 @@ The following flags are acceptable
   This will deploy the **latest** or the provided build to the given directory
   location.
 
-```
+::bash
+
   > utm build -d /software/installed/Temporary/ -n latest
-```
 
 utm run
 -------
@@ -228,9 +229,9 @@ Uses lionfish under the hood
 Usage
 *****
 
-```
+::bash
+
   > utm run --build my_build "stem-ingest -e"
-```
 
 The following flags are accepted:
 
