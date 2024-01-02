@@ -5,7 +5,7 @@ UTM_BUILD_DIR=${UTM_BUILD_DIR:-"$HOME/Workspace/UTM/Builds"}
 _UTM_BASE_COMMAND=utm
 _UTM_JSON_FILENAME=.utm.json
 _UTM_PIPELINE_DIRNAME=.pipeline
-_UTM_REPO_DIRNAME=repos
+_UTM_REPO_DIRNAME=includes
 
 _UTM_COMMANDS=(
   "create" "remove" "activate"
@@ -99,6 +99,8 @@ function _utm_completions() {
     if ! _utm_in_array "$hint" "${_UTM_FLAGS[@]}"; then
       return 1
     fi
+
+    _UTM_FLAGS=( "${_UTM_FLAGS[@]/$hint}" )
 
     # take up the next word
     (("next_loc = $next_loc + 1"))

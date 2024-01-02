@@ -132,3 +132,25 @@ _utm_join () {
 
   echo "${str_array[*]}" | tr " " "$sep"
 }
+
+_utm_ensure_dir() {
+  local dirpath=$1
+
+  if [ -e "$dirpath" ]; then
+    if [ ! -d "$dirpath" ]; then
+      _utm_log_debug "Removing file found at $dirpath ..." 
+      if ! rm "$dirpath" > /dev/null; then
+        _utm_log_error "Cannot remove file found at $dirpath"
+        return 1
+      fi
+    fi
+  fi
+
+
+  if ! mkdir -p "$dirpath" > /dev/null; then
+    _utm_log_error "Cannot create directory at $dirpath"
+    return 1
+  fi
+
+  return 0
+}

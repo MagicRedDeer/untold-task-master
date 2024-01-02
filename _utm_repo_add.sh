@@ -14,6 +14,9 @@ _UTM_REPOS=(
   "u-rig" "u-utils"
 )
 
+_UTM_GIT_URL=git@gitlab.lhr.untoldstudios.tv:pipeline
+_UTM_GIT_URL_TD=git@gitlab.lhr.untoldstudios.tv:pipeline-td
+
 _UTM_REPO_ADD_FLAGS=()
 
 _utm_repo_add_completions() {
@@ -29,14 +32,132 @@ _utm_repo_add() {
   local repos=("$@")
   local repo
   _utm_log_debug "Executing utm repo add '${repos[*]}' on '$task' ..."
+
+  if ! _utm_repo_verify "$task" "${repos[@]}"; then
+    return 1
+  fi
+
+  local lf_add
+
+  lf_add=
   for repo in "${repos[@]}"; do
-    _utm_repo_add_single "$task" "$repo"
+    if ! _utm_repo_add_single "$task" "$repo"; then
+      return 1
+    fi
+
+    if _utm_lf_verify_single "$repo"; then
+      if _utm_lf_package_add_single "$task" "$repo"; then
+        lf_add=yes
+      fi
+    fi
+
   done
+
+  if [ -n "$lf_add" ]; then
+    _utm_log_debug "Writing out config file for task '$task' ..."
+    _utm_pipeline_config_write_config "$task"
+  fi
+}
+
+_utm_repo_verify() {
+  local task=$1
+  shift
+  local repos=("$@")
+  local repo
+
+  _utm_log_debug "Verifying ${#repos[@]} repositories ..."
+
+  for repo in "${repos[@]}"; do
+    if ! _utm_in_array "$repo" "${_UTM_REPOS[@]}"; then
+      _utm_log_error "Invalid repo name '$repo'!"
+      return 1
+    fi
+
+    local repo_location
+    repo_location=$(_utm_repo_dir_ensure "$task")/repo
+    if [ -e "$repo_location" ]; then
+      _utm_log_error "$repo_location already exists!"
+      return 1
+    fi
+
+  done
+
+  return 0
 }
 
 _utm_repo_add_single() {
   local task=$1
   local repo=$2
-  _utm_log_debug "Adding repo '$repo' to '$task' ..."
+
+  if ! repo_location=$(_utm_repo_dir_ensure "$task")/$repo; then
+    return 1
+  fi
+
+  if [ -e "$repo_location" ]; then
+    _utm_log_error "$repo_location already exists!"
+    return 1
+  fi
+
+  local git_url
+  git_url=$(_utm_repo_git_url "$repo")
+  _utm_log_debug "Cloning '$git_url' -> '$repo_location' ..."
+  git clone "$git_url" "$repo_location"
+
+  if ! git clone "$git_url" "$repo_location" ; then
+    _utm_log_error "Error encountered while cloning repo!"
+    return 1
+  fi
+
+  _utm_log_debug "$repo cloned successfully!"
+
+  if ! pushd "$repo_location" >/dev/null 2>&1 ; then 
+    _utm_log_error "Error $? encountered while pushd"
+    return 1
+  fi
+
+  _utm_log_debug "Checking out branch '$task' in '$repo' ..."
+  if ! git checkout -b "$task" >/dev/null 2>&1 ; then
+    _utm_log_error "Error $? encountered while checking out branch"
+    return 1
+  fi
+
+  popd >/dev/null 2>&1 || return 1
+
+  _utm_repo_create_pipeline_links "$task" "$repo"
 }
 
+_utm_repo_dir_ensure() {
+  local task=$1
+  local repo=$2
+  local repo_dir="$UTM_TASKDIR/$task/$_UTM_REPO_DIRNAME"
+  if ! _utm_ensure_dir "$repo_dir"; then
+    return 1
+  fi
+  echo "$repo_dir"
+  return 0
+}
+
+_utm_repo_git_url() {
+  local repo=$1
+  if _utm_in_array "$repo" "${_UTM_TD_REPOS[@]}"; then
+    echo "$_UTM_GIT_URL_TD/$repo"
+  else
+    echo "$_UTM_GIT_URL/$repo"
+  fi
+}
+
+_utm_repo_create_pipeline_links () {
+  task=$1
+  repo=$2
+
+  local repo_location
+  repo_location=$(_utm_repo_dir_ensure "$task")/$repo
+
+  local py_ver
+  for py_ver in "${_UTM_PYTHON_VERSIONS[@]}"; do
+    local pipeline_dir
+    pipeline_dir=_utm_pipeline_config_ensure_pipeline_dir "$task" "$py_ver"
+    _utm_log_debug "Creating link $pipeline_dir -> $repo_location ..."
+    ln -s -T "$repo_location" "$pipeline_dir"
+  done
+}
