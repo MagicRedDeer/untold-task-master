@@ -6,10 +6,10 @@ _UTM_PYTHON_VERSIONS=(
   "3.9.16"
 )
 
-_utm_pipeline_config_ensure_base_dir() {
+_utm_pipeline_ensure_base_dir() {
   local task=$1
 
-  local pipeline_base_dir="$_UTM_TASKDIR/$task/$_UTM_PIPELINE_DIRNAME"
+  local pipeline_base_dir="$UTM_TASKDIR/$task/$_UTM_PIPELINE_DIRNAME"
 
   if ! _utm_ensure_dir "$pipeline_base_dir" ; then
     return 1
@@ -18,7 +18,7 @@ _utm_pipeline_config_ensure_base_dir() {
   return 0
 }
 
-_utm_pipeline_config_ensure_pipeline_dir () {
+_utm_pipeline_ensure_pipeline_dir () {
   local task=$1
   local py_ver=$2
   local os=${3:-$UNTOLD_OS_VERSION}
@@ -30,7 +30,7 @@ _utm_pipeline_config_ensure_pipeline_dir () {
 
   local pipeline_dir
 
-  if ! pipeline_dir="$(_utm_pipeline_config_ensure_base_dir "$task")/$os/$py_ver/"
+  if ! pipeline_dir="$(_utm_pipeline_ensure_base_dir "$task")/$os/$py_ver/"
   then
     return 1
   fi
@@ -43,11 +43,11 @@ _utm_pipeline_config_ensure_pipeline_dir () {
   return 0
 }
 
-_utm_pipeline_config_ensure_config_dir() {
+_utm_pipeline_ensure_config_dir() {
   local task=$1
-  local pipeline_config_dir
+  local pipeline_dir
 
-  if ! pipeline_config_dir="$(_utm_pipeline_config_ensure_base_dir "$task")/pipeline-config/"
+  if ! pipeline_config_dir="$(_utm_pipeline_ensure_base_dir "$task")/pipeline-config/"
   then
     return 1
   fi
@@ -56,14 +56,16 @@ _utm_pipeline_config_ensure_config_dir() {
     return 1
   fi
 
+  echo "$pipeline_config_dir"
+
   return 0
 }
 
-_utm_pipeline_config_write_config () {
+_utm_pipeline_write_config () {
   local task=$1
   local task_config_dir
 
-  if ! task_config_dir=$(_utm_pipeline_config_ensure_config_dir "$task")
+  if ! task_config_dir=$(_utm_pipeline_ensure_config_dir "$task")
   then
     return 1
   fi

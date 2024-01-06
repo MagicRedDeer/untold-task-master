@@ -55,7 +55,7 @@ _utm_repo_add() {
 
   if [ -n "$lf_add" ]; then
     _utm_log_debug "Writing out config file for task '$task' ..."
-    _utm_pipeline_config_write_config "$task"
+    _utm_pipeline_write_config "$task"
   fi
 }
 
@@ -101,10 +101,9 @@ _utm_repo_add_single() {
   local git_url
   git_url=$(_utm_repo_git_url "$repo")
   _utm_log_debug "Cloning '$git_url' -> '$repo_location' ..."
-  git clone "$git_url" "$repo_location"
 
   if ! git clone "$git_url" "$repo_location" ; then
-    _utm_log_error "Error encountered while cloning repo!"
+    _utm_log_error "Error encountered while cloning '$repo'!"
     return 1
   fi
 
@@ -156,8 +155,8 @@ _utm_repo_create_pipeline_links () {
   local py_ver
   for py_ver in "${_UTM_PYTHON_VERSIONS[@]}"; do
     local pipeline_dir
-    pipeline_dir=_utm_pipeline_config_ensure_pipeline_dir "$task" "$py_ver"
+    pipeline_dir=$(_utm_pipeline_ensure_pipeline_dir "$task" "$py_ver")
     _utm_log_debug "Creating link $pipeline_dir -> $repo_location ..."
-    ln -s -T "$repo_location" "$pipeline_dir"
+    ln -s -T "$repo_location" "$pipeline_dir"/"$repo"
   done
 }

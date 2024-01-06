@@ -46,7 +46,7 @@ _utm_create() {
 
   _utm_log_debug _utm_initialize_utm_json "$task_name" "$json_file_path"
   _utm_initialize_utm_json "$task_name" "$json_file_path"
-  _utm_pipeline_config_ensure_base_dir "$task_dir"
+  _utm_pipeline_ensure_base_dir "$task_dir"
 }
 
 _utm_initialize_utm_json() {

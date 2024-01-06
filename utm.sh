@@ -36,6 +36,8 @@ source "$_UTM_DIRECTORY/_utm_remove.sh"
 source "$_UTM_DIRECTORY/_utm_retire.sh"
 source "$_UTM_DIRECTORY/_utm_revive.sh"
 source "$_UTM_DIRECTORY/_utm_repo.sh"
+source "$_UTM_DIRECTORY/_utm_lf.sh"
+source "$_UTM_DIRECTORY/_utm_pipeline.sh"
 
 function _utm_is_valid_command() {
   local delimiter=" "

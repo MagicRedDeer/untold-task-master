@@ -49,7 +49,7 @@ _utm_lf_package_add_single() {
   local task=$1
   local repo=$2
 
-  if [ -z "$package_name" ]; then
+  if [ -z "$repo" ]; then
     _utm_log_error "Please provide a package to add!"
     return 1
   fi
