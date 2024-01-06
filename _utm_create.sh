@@ -21,7 +21,7 @@ _utm_create() {
   fi
 
   if _utm_in_array "$task_name" "${_UTM_FORBIDDEN_TASK_NAMES[@]}"; then
-    _utm_log_error "You may not name a task '$task_name'"
+    _utm_log_error "Sorry! You may not name a task '$task_name'"
     return 1
   fi
 
@@ -45,26 +45,6 @@ _utm_create() {
   touch "$json_file_path"
 
   _utm_log_debug _utm_initialize_utm_json "$task_name" "$json_file_path"
-  _utm_initialize_utm_json "$task_name" "$json_file_path"
-  _utm_pipeline_ensure_base_dir "$task_dir"
-}
-
-_utm_initialize_utm_json() {
-  local task_name=$1;
-  local json_file_path=$2
-
-  if [ -z "$json_file_path" ]; then
-    json_file_path="$UTM_TASKDIR/$task_name/$_UTM_JSON_FILENAME"
-  fi
-
-  _utm_log_debug "initializing file at '$json_file_path' ..."
-  json_content=$(jq \
-    --arg task_name "$task_name" \
-    -n \
-    '{name: $task_name,
-      status: "live"}')
-  _utm_log_debug "json content:"
-  _utm_log_debug "$json_content"
-  _utm_log_debug "Writing to $json_file_path ..."
-  echo "$json_content" >| "$json_file_path"
+  _utm_json_initialize "$task_name" "$json_file_path"
+  _utm_pipeline_ensure_base_dir "$task_dir" > /dev/null
 }

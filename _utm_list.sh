@@ -36,13 +36,13 @@ _utm_list() {
     case "$flag" in
       --retired|-r)
         task_status=$(_utm_task_status "$(basename "$name")")
-        [ "$task_status" == "\"retired\"" ] || continue
+        [ "$task_status" == "retired" ] || continue
         ;;
       --all|-a)
         ;;
       *)
         task_status=$(_utm_task_status "$(basename "$name")")
-        [ "$task_status" == "\"live\"" ] || continue
+        [ "$task_status" == "live" ] || continue
         ;;
     esac
 

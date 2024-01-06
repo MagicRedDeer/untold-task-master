@@ -1,5 +1,7 @@
 #!/bin/bash
 
+_UTM_PIPELINE_DIRNAME=.pipeline
+
 _UTM_PYTHON_VERSIONS=(
   "2.7.12"
   "3.7.10"

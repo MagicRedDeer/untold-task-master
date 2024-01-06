@@ -3,9 +3,6 @@ UTM_TASKDIR=${UTM_TASKDIR:-"$HOME/Workspace/UTM/Tasks"}
 UTM_BUILD_DIR=${UTM_BUILD_DIR:-"$HOME/Workspace/UTM/Builds"}
 
 _UTM_BASE_COMMAND=utm
-_UTM_JSON_FILENAME=.utm.json
-_UTM_PIPELINE_DIRNAME=.pipeline
-_UTM_REPO_DIRNAME=includes
 
 _UTM_COMMANDS=(
   "create" "remove" "activate"
@@ -38,6 +35,7 @@ source "$_UTM_DIRECTORY/_utm_revive.sh"
 source "$_UTM_DIRECTORY/_utm_repo.sh"
 source "$_UTM_DIRECTORY/_utm_lf.sh"
 source "$_UTM_DIRECTORY/_utm_pipeline.sh"
+source "$_UTM_DIRECTORY/_utm_json.sh"
 
 function _utm_is_valid_command() {
   local delimiter=" "

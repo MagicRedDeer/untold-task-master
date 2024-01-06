@@ -18,18 +18,18 @@ _utm_task_status () {
   local json_path
   json_path=$(_utm_task_json_filepath "$task_name")
   [[ -f "$json_path" ]] || return 1
-  jq '.status' "$json_path"
+  jq -r '.status' "$json_path"
 }
 
 _utm_task_is_retired () {
   task_status=$(_utm_task_status "$1")
-  [ "$task_status" == "\"retired\"" ] && return 0
+  [ "$task_status" == "retired" ] && return 0
   return 1
 }
 
 _utm_task_is_live () {
   task_status=$(_utm_task_status "$1")
-  [ "$task_status" == "\"live\"" ] && return 0
+  [ "$task_status" == "live" ] && return 0
   return 1
 }
 

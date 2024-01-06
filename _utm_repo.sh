@@ -13,6 +13,7 @@ _UTM_REPO_FLAGS=(
 )
 
 _UTM_REPO_COMMAND=repo
+_UTM_REPO_DIRNAME=includes
 
 source "$_UTM_DIRECTORY/_utm_repo_add.sh"
 
