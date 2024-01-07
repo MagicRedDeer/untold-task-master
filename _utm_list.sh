@@ -26,26 +26,15 @@ _utm_list() {
     fi
   fi
 
-  for name in "$UTM_TASKDIR"/*
-  do
-    [ "$name" != "$UTM_TASKDIR/$_UTM_ACTIVE_TASK" ] || continue
-    [ -d "$name" ] || continue
-    [ -f "$name/$_UTM_JSON_FILENAME" ] || continue
-
-
-    case "$flag" in
-      --retired|-r)
-        task_status=$(_utm_task_status "$(basename "$name")")
-        [ "$task_status" == "retired" ] || continue
-        ;;
-      --all|-a)
-        ;;
-      *)
-        task_status=$(_utm_task_status "$(basename "$name")")
-        [ "$task_status" == "live" ] || continue
-        ;;
-    esac
-
-    basename "$name"
-  done
+  case "$flag" in
+    --retired|-r)
+      _utm_json_task_by_status "retired"
+      ;;
+    --all|-a)
+      _utm_json_task_by_status ""
+      ;;
+    "")
+      _utm_json_task_by_status "live"
+      ;;
+  esac
 }

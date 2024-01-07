@@ -23,3 +23,31 @@ _utm_json_initialize() {
   _utm_log_debug "Writing to $json_file_path ..."
   echo "$json_content" >| "$json_file_path"
 }
+
+_utm_json_add_repos () {
+  local task="$1"
+  local repos=("$@")
+
+}
+
+_utm_json_task_by_status () {
+  local status=$1
+
+  local cmd="jq -r '"
+  if [ -n "$status" ]; then
+    cmd="$cmd select(.status==\$status) |"
+  fi
+  cmd="$cmd input_filename | split(\"/\")[-2] '"
+
+  if [ -n "$status" ]; then
+    cmd="$cmd --arg status $status"
+  fi
+
+  local json_file
+  for json_file in "$UTM_TASKDIR"/*/"$_UTM_JSON_FILENAME"; do
+    cmd="$cmd \"$json_file\""
+  done
+
+  _utm_log_debug "$cmd"
+  eval "$cmd"
+}
