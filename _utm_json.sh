@@ -46,7 +46,7 @@ _utm_json_task_by_status () {
     cmd="$cmd --arg status $status"
   fi
 
-  cmd="$cmd --from-file \"$_UTM_JQ_SCRIPTS_DIR/filter_tasks.jq\""
+  cmd="$cmd --from-file \"$_UTM_JQ_SCRIPTS_DIR/tasks_by_status.jq\""
 
   _utm_log_debug "$cmd"
   eval "$cmd"
