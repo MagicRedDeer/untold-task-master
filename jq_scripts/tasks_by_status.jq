@@ -10,11 +10,12 @@ $ARGS.named
 
 # filtering out invalid jsons
 | $ARGS.named[$task_file]
-| try fromjson catch empty
+| try fromjson
 | select(.name==$task_name)
 
 # selecting and returning the required task
 | if $ARGS.named.status != null then
+    # task filter by status
     select(.status==$ARGS.named.status)
   else
     .
