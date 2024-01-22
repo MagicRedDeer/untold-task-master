@@ -1,6 +1,7 @@
 #!/bin/bash
 
 _UTM_JSON_FILENAME=.utm.json
+_UTM_JQ_SCRIPTS_DIR="$_UTM_DIRECTORY/jq_scripts"
 
 _utm_json_initialize() {
   local task_name=$1;
@@ -37,7 +38,6 @@ _utm_json_task_by_status () {
   # Adding json files and data as arguments
   local json_file
   for json_file in "$UTM_TASKDIR"/*/"$_UTM_JSON_FILENAME"; do
-    data="$(<"$json_file")"
     cmd="$cmd --arg \"$json_file\" \"\$(<$json_file)\""
   done
 
@@ -46,25 +46,7 @@ _utm_json_task_by_status () {
     cmd="$cmd --arg status $status"
   fi
 
-  cmd="$cmd '"
-
-  # getting each task_file and task_name
-  cmd="$cmd \$ARGS.named"
-  cmd="$cmd | keys | .[] | select(.!=\"status\") | . as \$task_file"
-  cmd="$cmd | split(\"/\")[-2] as \$task_name"
-
-  # filtering out all invalid jsons
-  cmd="$cmd | \$ARGS.named[\$task_file] | try fromjson catch empty"
-  cmd="$cmd | select(.name==\$task_name)"
-
-  # add status filter if required
-  if [ -n "$status" ]; then
-    cmd="$cmd | select(.status==\$status)"
-  fi
-
-  # getting task name from filename
-  cmd="$cmd | \$task_file | split(\"/\")[-2]"
-  cmd="$cmd'"
+  cmd="$cmd --from-file \"$_UTM_JQ_SCRIPTS_DIR/list.jq\""
 
   _utm_log_debug "$cmd"
   eval "$cmd"
