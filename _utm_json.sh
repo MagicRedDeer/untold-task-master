@@ -30,6 +30,13 @@ _utm_json_add_repos () {
   local repos=("$@")
 }
 
+#######################################
+# list all tasks filtering by status if provided
+#
+# Arguments:
+#  $1 - status to filter for
+#   
+#######################################
 _utm_json_task_by_status () {
   local status=$1
 
