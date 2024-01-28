@@ -47,7 +47,7 @@ _utm_activate_perform() {
   _utm_log_debug "Activating $task_name ..."
 
   local task_dir="$UTM_TASKDIR/$task_name"
-  # _utm_create_pipeline_link "$task_dir"
+  _utm_create_pipeline_link "$task_name"
   _utm_create_active_task_link "$task_dir"
 }
 
@@ -69,7 +69,7 @@ _utm_create_pipeline_link () {
   local pipeline_link="$HOME/pipeline"
   local target_dir
 
-  target_dir=$(_utm_ensure_task_pipeline_base_dir "$task_dir")
+  target_dir=$(_utm_pipeline_ensure_base_dir "$task_dir")
 
   if [ -d "$pipeline_link" ]; then
     _utm_log_debug "Removing existing directory at: $pipeline_link ..."

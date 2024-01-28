@@ -32,7 +32,7 @@ _utm_pipeline_ensure_pipeline_dir () {
 
   local pipeline_dir
 
-  if ! pipeline_dir="$(_utm_pipeline_ensure_base_dir "$task")/$os/$py_ver/"
+  if ! pipeline_dir="$(_utm_pipeline_ensure_base_dir "$task")/$os/python-$py_ver/"
   then
     return 1
   fi
@@ -49,7 +49,7 @@ _utm_pipeline_ensure_config_dir() {
   local task=$1
   local pipeline_dir
 
-  if ! pipeline_config_dir="$(_utm_pipeline_ensure_base_dir "$task")/pipeline-config/"
+  if ! pipeline_config_dir="$(_utm_pipeline_ensure_base_dir "$task")/pipeline-config"
   then
     return 1
   fi
@@ -82,5 +82,5 @@ _utm_pipeline_write_config () {
     cp "$pipeline_config" "$backup"
   fi
 
-  _utm_lf_generate_config "$task" > "$pipeline_config"
+  _utm_lf_generate_config "$task" >| "$pipeline_config"
 }

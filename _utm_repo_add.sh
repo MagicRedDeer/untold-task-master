@@ -37,6 +37,11 @@ _utm_repo_add() {
     return 1
   fi
 
+  if ! _utm_json_add_repos "$task" "${repos[@]}"; then
+    _utm_log_error "Cannot add repos '${repos[*]}' to json on '$task'..."
+    return 1
+  fi
+
   local lf_add
 
   lf_add=
@@ -74,7 +79,8 @@ _utm_repo_verify() {
     fi
 
     local repo_location
-    repo_location=$(_utm_repo_dir_ensure "$task")/repo
+    repo_location=$(_utm_repo_dir_ensure "$task")/$repo
+    _utm_log_debug "Checking repo location: $repo_location"
     if [ -e "$repo_location" ]; then
       _utm_log_error "$repo_location already exists!"
       return 1

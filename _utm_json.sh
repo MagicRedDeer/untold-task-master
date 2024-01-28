@@ -27,7 +27,25 @@ _utm_json_initialize() {
 
 _utm_json_add_repos () {
   local task="$1"
+  shift
   local repos=("$@")
+
+  local json_file_path
+  json_file_path="$UTM_TASKDIR/$task/$_UTM_JSON_FILENAME"
+
+  local cmd="jq"
+  cmd="$cmd --from-file \"$_UTM_JQ_SCRIPTS_DIR/add_repos_to_task.jq\""
+  cmd="$cmd \"$json_file_path\""
+  cmd="$cmd --args ${repos[*]}"
+  # cmd="$cmd >| \"$UTM_TASKDIR/$task/$_UTM_JSON_FILENAME\""
+  local json_content
+
+  _utm_log_debug "$cmd"
+  json_content=$(eval "$cmd")
+
+  _utm_log_debug "json content: $json_content"
+  _utm_log_debug "Writing to $json_file_path ..."
+  echo "$json_content" >| "$json_file_path"
 }
 
 #######################################
@@ -40,7 +58,7 @@ _utm_json_add_repos () {
 _utm_json_task_by_status () {
   local status=$1
 
-  local cmd="jq -n -r "
+  local cmd="jq -n -r"
 
   # Adding json files and data as arguments
   local json_file
