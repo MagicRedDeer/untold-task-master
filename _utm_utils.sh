@@ -154,3 +154,15 @@ _utm_ensure_dir() {
 
   return 0
 }
+
+_utm_confirm() {
+  local question=${1:="Are you sure?"}
+  question="$question (y/n) "
+  read -p "$question" -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+     return 0 
+  fi
+  return 1
+}

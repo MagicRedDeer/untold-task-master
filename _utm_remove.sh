@@ -26,6 +26,10 @@ _utm_remove () {
     return 1
   fi
 
+  if ! _utm_confirm "Are you sure you want to delete the task '$task_name'?"; then
+    return 1
+  fi
+
   _utm_log_debug "Removing task '$task_name' ..."
 
   if [ "$task_name" = "$(_utm_active)" ]; then
