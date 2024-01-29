@@ -52,9 +52,8 @@ _utm_repo_remove_single() {
   _utm_pipeline_remove_repo_links "$task" "$repo"
 }
 
+
 _utm_repo_remove() {
-  local task=$1
-  shift
   local arg=$1
 
   local confirm=yes
@@ -72,6 +71,8 @@ _utm_repo_remove() {
     arg=$1
   done
 
+  local task=$1
+  shift
   local repos=("$@")
 
   if ! _utm_repo_remove_verify "$task" "${repos[@]}"; then
@@ -90,7 +91,7 @@ _utm_repo_remove() {
   local lf_remove
   lf_remove=
   for repo in "${repos[@]}"; do
-    echo _utm_log_debug "remove repo '$repo' ..."
+    _utm_log_debug "removing repo '$repo' ..."
 
     _utm_repo_remove_single "$task" "$repo"
 
