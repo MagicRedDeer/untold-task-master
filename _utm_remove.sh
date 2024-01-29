@@ -59,7 +59,7 @@ _utm_remove () {
   if [ "$task_name" = "$(_utm_active)" ]; then
 
     _utm_log_debug "Task '$task_name' is active! removing links ..."
-    rm "${USER_TASKDIR}/${_UTM_ACTIVE_TASK}"
+    rm "${UTM_TASKDIR}/${_UTM_ACTIVE_TASK}"
     # rm "$HOME/pipeline"
   fi
 
