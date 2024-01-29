@@ -177,5 +177,6 @@ _utm_repo_remove() {
 
 _utm_repo_list() {
   local task=$1
-  _utm_log_info "listing all repos in '$task'..."
+  _utm_log_debug "listing all repos in '$task'..."
+  _utm_json_repo_list "$task"
 }

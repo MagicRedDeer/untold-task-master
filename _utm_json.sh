@@ -12,6 +12,7 @@ _utm_json_initialize() {
   fi
 
   _utm_log_debug "initializing file at '$json_file_path' ..."
+  local json_content
   json_content=$(jq \
     --arg task_name "$task_name" \
     -n \
@@ -40,10 +41,17 @@ _utm_json_add_repos () {
   # cmd="$cmd >| \"$UTM_TASKDIR/$task/$_UTM_JSON_FILENAME\""
   local json_content
 
-  _utm_log_debug "$cmd"
-  json_content=$(eval "$cmd")
+  # _utm_log_debug "$cmd"
+  # json_content=$(eval "$cmd")
 
-  _utm_log_debug "json content: $json_content"
+  _utm_log_debug "Modifying $json_file_path ..."
+  json_content=$(jq \
+    --from-file "$_UTM_JQ_SCRIPTS_DIR/add_repos_to_task.jq" \
+    "$json_file_path" \
+    --args "${repos[@]}" \
+  )
+
+  _utm_log_debug "new json content: $json_content"
   _utm_log_debug "Writing to $json_file_path ..."
   echo "$json_content" >| "$json_file_path"
 }
@@ -75,4 +83,12 @@ _utm_json_task_by_status () {
 
   _utm_log_debug "$cmd"
   eval "$cmd"
+}
+
+_utm_json_repo_list(){
+  local task="$1"
+  local json_file_path="$UTM_TASKDIR/$task/$_UTM_JSON_FILENAME"
+
+  _utm_log_debug "Reading list of repos from '$json_file_path' ..."
+  jq -r '.repos[]' "$json_file_path"
 }
