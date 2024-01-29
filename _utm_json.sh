@@ -90,5 +90,5 @@ _utm_json_repo_list(){
   local json_file_path="$UTM_TASKDIR/$task/$_UTM_JSON_FILENAME"
 
   _utm_log_debug "Reading list of repos from '$json_file_path' ..."
-  jq -r '.repos[]' "$json_file_path"
+  jq -r 'try .repos[]' "$json_file_path"
 }

@@ -4,7 +4,7 @@ _UTM_REPO_COMMANDS=(
   "add"
   "remove"
   "list"
-  "create"
+  "create" # TODO: add support for creating new repositories
 )
 
 _UTM_REPO_FLAGS=(
@@ -177,6 +177,5 @@ _utm_repo_remove() {
 
 _utm_repo_list() {
   local task=$1
-  _utm_log_debug "listing all repos in '$task'..."
   _utm_json_repo_list "$task"
 }
