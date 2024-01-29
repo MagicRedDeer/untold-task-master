@@ -18,6 +18,7 @@ _utm_retire () {
 
   if ! _utm_task_check_live "$task_name"; then
     _utm_log_error "'$task_name' is not a live task"
+    return 1
   fi
 
   local json_filepath

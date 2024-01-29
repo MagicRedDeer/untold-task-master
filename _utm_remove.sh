@@ -60,7 +60,7 @@ _utm_remove () {
 
     _utm_log_debug "Task '$task_name' is active! removing links ..."
     rm "${UTM_TASKDIR}/${_UTM_ACTIVE_TASK}"
-    # rm "$HOME/pipeline"
+    rm "$HOME/pipeline"
   fi
 
   local task_dir="$UTM_TASKDIR/$task_name"

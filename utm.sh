@@ -8,10 +8,10 @@ _UTM_COMMANDS=(
   "create" "remove" "activate"
   "retire" "revive"
   "active" "list"
-  "package" "build" "run"
-  "repo" "lf" "config"
-  "tmux" "attach"
+  "repo" "config"
   "dir" "cd"
+  "build" "run"
+  "attach"
 )
 
 _UTM_VERBOSE=
@@ -33,6 +33,7 @@ source "$_UTM_DIRECTORY/_utm_remove.sh"
 source "$_UTM_DIRECTORY/_utm_retire.sh"
 source "$_UTM_DIRECTORY/_utm_revive.sh"
 source "$_UTM_DIRECTORY/_utm_repo.sh"
+source "$_UTM_DIRECTORY/_utm_build.sh"
 source "$_UTM_DIRECTORY/_utm_lf.sh"
 source "$_UTM_DIRECTORY/_utm_pipeline.sh"
 source "$_UTM_DIRECTORY/_utm_json.sh"
@@ -93,14 +94,16 @@ function _utm_completions() {
         # shellcheck disable=SC2207
         COMPREPLY=($(_utm_repo_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
         return $?;;
+      "build")
+        # shellcheck disable=SC2207
+        COMPREPLY=($(_utm_build_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        return $?;;
     esac
 
     # if its not one of the flags there is something wrong ... abort
     if ! _utm_in_array "$hint" "${_UTM_FLAGS[@]}"; then
       return 1
     fi
-
-    _UTM_FLAGS=( "${_UTM_FLAGS[@]/$hint}" )
 
     # take up the next word
     (("next_loc = $next_loc + 1"))
@@ -219,6 +222,11 @@ function utm() {
     "repo")
       shift
       _utm_repo "$@"
+      return $?
+      ;;
+    "build")
+      shift
+      _utm_build "$@"
       return $?
       ;;
   esac

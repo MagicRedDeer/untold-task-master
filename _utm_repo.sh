@@ -32,9 +32,11 @@ _utm_repo_completions() {
       add)
         _utm_repo_add_completions "${words[@]:1}"
         return $?;;
+
       remove)
         _utm_repo_remove_completions "${task:="$(_utm_active)"}" "${words[@]:1}"
         return $?;;
+
       --task|-t)
         local tasks
         # shellcheck disable=SC2207
@@ -52,9 +54,6 @@ _utm_repo_completions() {
         fi
 
         task="${words[$next_loc + 1]}" 
-
-        _UTM_REPO_FLAGS=( "${_UTM_REPO_FLAGS[@]/--task}" )
-        _UTM_REPO_FLAGS=( "${_UTM_REPO_FLAGS[@]/-t}" )
 
         # skip the next word (task name)
         (("next_loc = $next_loc + 2"))
@@ -115,7 +114,7 @@ _utm_repo() {
         return 0;;
       *)
         _utm_log_error "Invalid argument ... $arg"
-        _utm_usage "error"
+        _utm_repo_usage "error"
         return 1
         ;;
     esac
@@ -174,7 +173,6 @@ _utm_repo() {
 
   _utm_log_error "$_UTM_BASE_COMMAND $_UTM_REPO_COMMAND $command NOT IMPLEMENTED!!"
 }
-
 
 _utm_repo_list() {
   local task=$1
