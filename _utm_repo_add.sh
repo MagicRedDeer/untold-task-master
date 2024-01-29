@@ -30,7 +30,6 @@ _utm_repo_add() {
   local task=$1
   shift
   local repos=("$@")
-  local repo
   _utm_log_debug "Executing utm repo add '${repos[*]}' on '$task' ..."
 
   if ! _utm_repo_verify "$task" "${repos[@]}"; then
@@ -43,6 +42,7 @@ _utm_repo_add() {
   fi
 
   local lf_add
+  local repo
 
   lf_add=
   for repo in "${repos[@]}"; do
@@ -95,6 +95,7 @@ _utm_repo_add_single() {
   local task=$1
   local repo=$2
 
+  local repo_location
   if ! repo_location=$(_utm_repo_dir_ensure "$task")/$repo; then
     return 1
   fi
@@ -152,17 +153,11 @@ _utm_repo_git_url() {
 }
 
 _utm_repo_create_pipeline_links () {
-  task=$1
-  repo=$2
+  local task=$1
+  local repo=$2
 
   local repo_location
   repo_location=$(_utm_repo_dir_ensure "$task")/$repo
 
-  local py_ver
-  for py_ver in "${_UTM_PYTHON_VERSIONS[@]}"; do
-    local pipeline_dir
-    pipeline_dir=$(_utm_pipeline_ensure_pipeline_dir "$task" "$py_ver")
-    _utm_log_debug "Creating link $pipeline_dir -> $repo_location ..."
-    ln -s -T "$repo_location" "$pipeline_dir"/"$repo"
-  done
+  _utm_pipeline_create_repo_links "$task" "$repo" "$repo_location"
 }

@@ -84,3 +84,38 @@ _utm_pipeline_write_config () {
 
   _utm_lf_generate_config "$task" >| "$pipeline_config"
 }
+
+_utm_pipeline_create_repo_links() {
+  local task=$1
+  local repo=$2
+  local repo_location=$3
+
+  local py_ver
+  for py_ver in "${_UTM_PYTHON_VERSIONS[@]}"; do
+    local pipeline_dir
+    pipeline_dir=$(_utm_pipeline_ensure_pipeline_dir "$task" "$py_ver")
+    local link="$pipeline_dir"/"$repo"
+
+    _utm_log_debug "Creating link $link -> $repo_location ..."
+    if ! ln -s -T "$repo_location" "$link"; then
+      _utm_log_error "Failed to create link: $link"
+    fi
+  done
+}
+
+_utm_pipeline_remove_repo_links() {
+  task=$1
+  repo=$2
+
+  local link
+  for link in "$UTM_TASKDIR/$task/$_UTM_PIPELINE_DIRNAME"/*/*/"$repo"; do
+    if [ ! -h "$link" ]; then
+      continue
+    fi
+    _utm_log_debug "Removing link $link ..."
+    if ! rm "$link"; then
+      _utm_log_error "Failed to remove link: '$link' !"
+    fi
+  done
+}
+

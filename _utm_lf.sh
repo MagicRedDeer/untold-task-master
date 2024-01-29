@@ -91,6 +91,51 @@ _utm_lf_package_add () {
   return 0
 }
 
+_utm_lf_package_remove_single() {
+  local task=$1
+  local repo=$2
+
+  if [ -z "$repo" ]; then
+    _utm_log_error "Please provide a package to add!"
+    return 1
+  fi
+
+  if ! _utm_lf_verify_single "$repo"; then
+    _utm_log_error "Invalid package for Lionfish '$repo'!"
+    return 1
+  fi
+    
+  _utm_lf_ensure "$task"
+
+  _utm_log_debug "Removing package '$repo' to '$task' ..."
+  _utm_log_debug "$_UTM_LF" package -env "$task" -rm "$repo"
+
+  local lf_msg
+  lf_msg=$("$_UTM_LF" package -env "$task" -rm "$repo" 2>&1)
+
+  if [ -n "$lf_msg" ]; then
+    _utm_log_error "$lf_msg"
+    return 1
+  fi
+}
+
+_utm_lf_package_remove () {
+  local task=$1
+  shift
+  local repos=("$@")
+
+  # shellcheck disable=2207
+  repos=($(_utm_filter_repos "${repos[@]}"))
+
+  _utm_lf_ensure "$task"
+  local repo
+  for repo in "${repos[@]}"; do
+    if ! _utm_lf_package_remove_single "$task" "$repo"; then
+      return 1
+    fi
+  done
+  return 0
+}
 _utm_lf_generate_config() {
   local task=$1
   _utm_lf_ensure "$task"

@@ -56,6 +56,26 @@ _utm_json_add_repos () {
   echo "$json_content" >| "$json_file_path"
 }
 
+_utm_json_remove_repos () {
+  local task=$1
+  shift
+  local repos=("$@")
+
+  local json_file_path
+  json_file_path="$UTM_TASKDIR/$task/$_UTM_JSON_FILENAME"
+
+
+  local json_content
+
+  json_content=$(jq \
+    --from-file "$_UTM_JQ_SCRIPTS_DIR/remove_repos_from_task.jq" \
+    "$json_file_path" \
+    --args "${repos[@]}"
+  )
+
+  echo "$json_content" >| "$json_file_path"
+}
+
 #######################################
 # list all tasks filtering by status if provided
 #

@@ -16,12 +16,14 @@ _UTM_REPO_COMMAND=repo
 _UTM_REPO_DIRNAME=includes
 
 source "$_UTM_DIRECTORY/_utm_repo_add.sh"
+source "$_UTM_DIRECTORY/_utm_repo_remove.sh"
 
 _utm_repo_completions() {
   local words=("$@")  
   local next_loc=0
   local hint
   local num_words=${#words[@]}
+  local task
 
   hint=${words[$next_loc]}
 
@@ -29,6 +31,9 @@ _utm_repo_completions() {
     case "${hint}" in
       add)
         _utm_repo_add_completions "${words[@]:1}"
+        return $?;;
+      remove)
+        _utm_repo_remove_completions "${task:="$(_utm_active)"}" "${words[@]:1}"
         return $?;;
       --task|-t)
         local tasks
@@ -45,6 +50,8 @@ _utm_repo_completions() {
         if ! _utm_in_array "${words[$next_loc + 1]}" "${tasks[@]}"; then
           return 1;
         fi
+
+        task="${words[$next_loc + 1]}" 
 
         _UTM_REPO_FLAGS=( "${_UTM_REPO_FLAGS[@]/--task}" )
         _UTM_REPO_FLAGS=( "${_UTM_REPO_FLAGS[@]/-t}" )
@@ -168,12 +175,6 @@ _utm_repo() {
   _utm_log_error "$_UTM_BASE_COMMAND $_UTM_REPO_COMMAND $command NOT IMPLEMENTED!!"
 }
 
-_utm_repo_remove() {
-  local task=$1
-  shift
-  local repos=("$@")
-  _utm_log_info "Removing repo" "${repos[@]}" in "'$task'"...
-}
 
 _utm_repo_list() {
   local task=$1
