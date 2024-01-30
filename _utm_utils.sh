@@ -173,10 +173,10 @@ _utm_sanitize() {
   local clean=
   # next, replace spaces with underscores
   clean=${clean// /_}
-  # clean all numbers from string
+  # clean all numbers from beginning of string
   # shellcheck disable=2001
-  clean=$(echo "${string}" | sed 's/^[0-9_]*//g')
+  clean=$(echo "${string}" | sed 's/^[0-9_-]*//g')
   # now, clean out anything that's not alphanumeric or an underscore
-  clean=${clean//[^a-zA-Z0-9_]/}
+  clean=${clean//[^a-zA-Z0-9_-]/}
   echo "$clean"
 }
