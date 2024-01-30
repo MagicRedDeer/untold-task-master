@@ -12,6 +12,7 @@ _UTM_LF_VALID_PACKAGES=(
 
 _UTM_LF_ENV_DIR="$HOME/.lionfish"
 
+
 _utm_lf_ensure() {
   local task=$1
   local lf_session_file="$_UTM_LF_SESSION_DIR/$task.json"
@@ -20,6 +21,7 @@ _utm_lf_ensure() {
     $_UTM_LF new "$task" > /dev/null 2>&1
   fi
 }
+
 
 _utm_lf_verify_repos() {
   local repos=("$@")
@@ -32,11 +34,13 @@ _utm_lf_verify_repos() {
   return 0
 }
 
+
 _utm_lf_verify_single() {
   local repo=$1
   _utm_in_array "$repo" "${_UTM_LF_VALID_PACKAGES[@]}"
   return $?
 }
+
 
 _utm_filter_repos() {
   local repos=("$@")
@@ -46,6 +50,7 @@ _utm_filter_repos() {
     fi
   done
 }
+
 
 _utm_lf_package_add_single() {
   local task=$1
@@ -75,6 +80,7 @@ _utm_lf_package_add_single() {
   fi
 }
 
+
 _utm_lf_package_add () {
   local task=$1
   shift
@@ -92,6 +98,7 @@ _utm_lf_package_add () {
   done
   return 0
 }
+
 
 _utm_lf_package_remove_single() {
   local task=$1
@@ -121,6 +128,7 @@ _utm_lf_package_remove_single() {
   fi
 }
 
+
 _utm_lf_package_remove () {
   local task=$1
   shift
@@ -139,12 +147,14 @@ _utm_lf_package_remove () {
   return 0
 }
 
+
 _utm_lf_generate_config() {
   local task=$1
   _utm_lf_ensure "$task"
   $_UTM_LF package -env "$task" -print
   return 0
 }
+
 
 _utm_lf_build() {
   local task=$1
@@ -154,13 +164,36 @@ _utm_lf_build() {
   "$_UTM_LF" build -env "$task" --prefix "$build_dir"
 }
 
+
 _utm_lf_repo_list() {
   local task=$1
   _utm_json_lf_repo_list "$_UTM_LF_ENV_DIR/$task.json"
 }
 
+
 _utm_lf_package_list() {
   local task=$1
   _utm_log_debug "$_UTM_LF" package -env "$task"
   "$_UTM_LF" package -env "$task"
+}
+
+
+_utm_lf_run() {
+  local task=$1
+  local build_name=${2:-live}
+  shift 2
+
+  local task_build_dir
+  task_build_dir=$(_utm_build_task_build_dir_ensure "$task")
+
+  local build_dir
+  build_dir="$task_build_dir/$build_name"
+
+  if [ ! -d "$build_dir" ]; then
+    _utm_log_error "Directory '$build_dir' does not exist"
+    return 1
+  fi
+
+  _utm_log_debug "$_UTM_LF" run -env "$build_dir" -c "$@" 
+  "$_UTM_LF" run -env "$build_dir" -c "$@" 
 }
