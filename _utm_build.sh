@@ -14,8 +14,10 @@ _UTM_BUILD_FLAGS=(
   "--name" "-n"
 )
 
+
 _UTM_BUILD_COMMAND=build
 
+source "$_UTM_DIRECTORY/_utm_build_add.sh"
 
 _utm_build_completions () {
   local words=("$@")
@@ -204,16 +206,6 @@ _utm_build() {
 }
 
 
-_utm_build_add_completions() {
-  echo "nothing goes here" $@
-}
-
-
-_utm_build_add() {
-  echo "utm build add ... placeholder with args: $*"
-}
-
-
 _utm_build_remove_completions() {
   echo "nothing goes here" $@
 }
@@ -227,3 +219,20 @@ _utm_build_remove() {
 _utm_build_list() {
   echo "utm build list ... placeholder with args: $*"
 }
+
+_utm_build_task_build_dir_ensure() {
+  local task=$1
+
+  local task_build_dir="$UTM_BUILD_DIR"/"$task"
+  mkdir -p "$task_build_dir" > /dev/null
+  
+  local task_pipeline_dir
+  if ! task_pipeline_dir=$(_utm_pipeline_ensure_base_dir "$task"); then
+    return 1
+  fi
+
+  ln -s -f -T "$task_pipeline_dir" "$task_build_dir/live"
+
+  echo "$task_build_dir"
+}
+

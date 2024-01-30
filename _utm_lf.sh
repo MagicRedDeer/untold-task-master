@@ -10,6 +10,8 @@ _UTM_LF_VALID_PACKAGES=(
   "pipeline-config"
 )
 
+_UTM_LF_ENV_DIR="$HOME/.lionfish"
+
 _utm_lf_ensure() {
   local task=$1
   local lf_session_file="$_UTM_LF_SESSION_DIR/$task.json"
@@ -136,9 +138,29 @@ _utm_lf_package_remove () {
   done
   return 0
 }
+
 _utm_lf_generate_config() {
   local task=$1
   _utm_lf_ensure "$task"
   $_UTM_LF package -env "$task" -print
   return 0
+}
+
+_utm_lf_build() {
+  local task=$1
+  local build_dir=$2
+
+  _utm_log_debug "$_UTM_LF" build -env "$task" --prefix "$build_dir"
+  "$_UTM_LF" build -env "$task" --prefix "$build_dir"
+}
+
+_utm_lf_repo_list() {
+  local task=$1
+  _utm_json_lf_repo_list "$_UTM_LF_ENV_DIR/$task.json"
+}
+
+_utm_lf_package_list() {
+  local task=$1
+  _utm_log_debug "$_UTM_LF" package -env "$task"
+  "$_UTM_LF" package -env "$task"
 }

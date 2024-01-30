@@ -112,3 +112,9 @@ _utm_json_repo_list(){
   _utm_log_debug "Reading list of repos from '$json_file_path' ..."
   jq -r 'try .repos[]' "$json_file_path"
 }
+
+_utm_json_lf_repo_list() {
+  local json_path=$1
+  _utm_log_debug jq -r '.[]' "$json_path"
+  jq -r '.[]' "$json_path"
+}
