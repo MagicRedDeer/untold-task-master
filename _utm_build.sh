@@ -4,6 +4,8 @@
 _UTM_BUILD_COMMANDS=(
   "add"
   "remove"
+  "dir"
+  "ll"
   "list"
 )
 
@@ -188,6 +190,16 @@ _utm_build() {
       return $?
       ;;
 
+    "dir")
+      _utm_build_task_build_dir_ensure "$task"
+      return $?
+      ;;
+
+    "ll")
+      ll "$(_utm_build_task_build_dir_ensure "$task")"
+      return $?
+      ;;
+     
     # "remove")
     #   shift
     #   _utm_build_remove "$task" "$build_name" "$@"
@@ -217,7 +229,18 @@ _utm_build_remove() {
 
 
 _utm_build_list() {
-  echo "utm build list ... placeholder with args: $*"
+  {
+    local task=$1
+
+    local task_build_dir="$UTM_BUILD_DIR"/"$task"
+
+    local build_dir
+    for build_dir in "$task_build_dir"/*; do
+      if [[ -d "$build_dir" || -h "$build_dir" ]]; then
+        basename "$build_dir"
+      fi
+    done
+  }
 }
 
 _utm_build_task_build_dir_ensure() {
