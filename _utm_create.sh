@@ -25,6 +25,13 @@ _utm_create() {
     return 1
   fi
 
+  local sanitized
+  sanitized=$(_utm_sanitize "$task_name")
+  if [ "$task_name" != "$sanitized" ]; then
+    _utm_log_error "'$task_name' is not a good task name ... try '${sanitized:-name}'"
+    return 1
+  fi
+
   # shellcheck disable=SC2207
   existing_tasks=($(_utm_list))
   if  _utm_in_array "$task_name" "${existing_tasks[@]}"; then
@@ -47,4 +54,6 @@ _utm_create() {
   _utm_log_debug _utm_initialize_utm_json "$task_name" "$json_file_path"
   _utm_json_initialize "$task_name" "$json_file_path"
   _utm_pipeline_ensure_base_dir "$task_dir" > /dev/null
+
+  _utm_log_info "A task called '$task_name' was created"
 }

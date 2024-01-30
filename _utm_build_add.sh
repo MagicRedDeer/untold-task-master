@@ -1,5 +1,8 @@
 #!/bin/bash
 
+_UTM_FORBIDDEN_BUILD_NAMES=(
+  "live" "latest"
+)
 
 _utm_build_add_completions() {
   echo "nothing goes here" $@
@@ -9,13 +12,16 @@ _utm_build_add() {
   local task=$1
   local build_name=$2
 
-  case "$build_name" in
-    "latest"|"live")
-      build_name=;;
-  esac
+  if _utm_in_array "$build_name" "${_UTM_FORBIDDEN_BUILD_NAMES[@]}"; then
+    _utm_log_error "Sorry! You may not name a build '$build_name'"
+    return 1
+  fi
 
-  if [[ "$build_name" =~ ^- ]]; then
-    build_name=
+  local sanitized
+  sanitized=$(_utm_sanitize "$build_name")
+  if [ "$build_name" != "$sanitized" ]; then
+    _utm_log_error "'$build_name' is not a good build name ... try '${sanitized:-name}'"
+    return 1
   fi
 
   local task_build_dir
@@ -47,4 +53,6 @@ _utm_build_add() {
     _utm_log_debug "Linking '$build_name' to './$date_str' ..."
     ln -s -f -T "./$date_str" "$task_build_dir/$build_name"
   fi
+
+  _utm_log_info "build '${build_name:-latest}' -> '${date_str}' created for task '$task'"
 }
