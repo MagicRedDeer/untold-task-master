@@ -229,19 +229,21 @@ _utm_build_remove() {
 
 
 _utm_build_list() {
-  {
-    local task=$1
+  local task=$1
 
-    local task_build_dir="$UTM_BUILD_DIR"/"$task"
+  local task_build_dir
+  if ! task_build_dir=$(_utm_build_task_build_dir_ensure "$task"); then
+    return 1
+  fi
 
-    local build_dir
-    for build_dir in "$task_build_dir"/*; do
-      if [[ -d "$build_dir" || -h "$build_dir" ]]; then
-        basename "$build_dir"
-      fi
-    done
-  }
+  local build_dir
+  for build_dir in "$task_build_dir"/*; do
+    if [[ -d "$build_dir" || -h "$build_dir" ]]; then
+      basename "$build_dir"
+    fi
+  done
 }
+
 
 _utm_build_task_build_dir_ensure() {
   local task=$1

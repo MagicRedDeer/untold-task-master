@@ -181,7 +181,9 @@ _utm_lf_package_list() {
 _utm_lf_run() {
   local task=$1
   local build_name=${2:-live}
+  local python_version=${3:-"3.7.10"}
   shift 2
+  local command=$1
 
   local task_build_dir
   task_build_dir=$(_utm_build_task_build_dir_ensure "$task")
@@ -194,6 +196,6 @@ _utm_lf_run() {
     return 1
   fi
 
-  _utm_log_debug "$_UTM_LF" run -env "$build_dir" -c "$@" 
-  "$_UTM_LF" run -env "$build_dir" -c "$@" 
+  _utm_log_debug "$_UTM_LF" run -env "$build_dir" -c "$command" -- "$@"
+  "$_UTM_LF" run -env "$build_dir" -p "$python_version" -c "$command" -- "$@"
 }

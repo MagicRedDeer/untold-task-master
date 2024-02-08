@@ -34,6 +34,7 @@ source "$_UTM_DIRECTORY/_utm_retire.sh"
 source "$_UTM_DIRECTORY/_utm_revive.sh"
 source "$_UTM_DIRECTORY/_utm_repo.sh"
 source "$_UTM_DIRECTORY/_utm_build.sh"
+source "$_UTM_DIRECTORY/_utm_run.sh"
 source "$_UTM_DIRECTORY/_utm_lf.sh"
 source "$_UTM_DIRECTORY/_utm_pipeline.sh"
 source "$_UTM_DIRECTORY/_utm_json.sh"
@@ -97,6 +98,10 @@ function _utm_completions() {
       "build")
         # shellcheck disable=SC2207
         COMPREPLY=($(_utm_build_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        return $?;;
+      "run")
+        # shellcheck disable=SC2207
+        COMPREPLY=($(_utm_run_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
         return $?;;
     esac
 
@@ -227,6 +232,11 @@ function utm() {
     "build")
       shift
       _utm_build "$@"
+      return $?
+      ;;
+    "run")
+      shift
+      _utm_run "$@"
       return $?
       ;;
   esac
