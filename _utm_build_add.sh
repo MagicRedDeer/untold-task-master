@@ -5,7 +5,7 @@ _UTM_FORBIDDEN_BUILD_NAMES=(
 )
 
 _utm_build_add_completions() {
-  echo "nothing goes here" $@
+  echo "nothing goes here" "$@"
 }
 
 _utm_build_add() {

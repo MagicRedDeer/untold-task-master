@@ -42,6 +42,10 @@ _utm_build_completions () {
         _utm_build_add_completions "${task:="$(_utm_active)"}" "$build_name" "${words[@]:1}"
         return $?;;
 
+      list)
+        _utm_build_list_completions "${words[@]:1}"
+        return $?;;
+
       # remove)
       #   _utm_build_remove_completions "${task:="$(_utm_active)"}" "$build_name" "${words[@]:1}"
       #   return $?;;

@@ -10,6 +10,16 @@ _UTM_BUILD_LIST_FLAGS=(
 )
 
 
+_utm_build_list_completions(){
+  local words=("$@")
+  local num_words=${#words[@]}
+
+  if [[ $num_words -eq 1 ]]; then
+    _utm_suggest "${words[0]}" "${_UTM_BUILD_LIST_FLAGS[*]}" "${_UTM_BUILD_LIST_FLAGS[*]}"
+  fi
+}
+
+
 _utm_build_list() {
   local task=$1
   local arg=$2
