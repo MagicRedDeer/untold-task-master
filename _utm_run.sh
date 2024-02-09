@@ -26,7 +26,128 @@ _UTM_RUN_COMMAND=run
 
 _utm_run_completions () {
   local words=("$@")
-  echo "${words[@]}"
+  local next_loc=0
+  local hint=
+  local num_words=${#words[@]}
+  local task=
+  local build_name=
+
+  task=$(_utm_active)
+  hint=${words[$next_loc]}
+
+
+  while [ "$((next_loc + 1))" -lt "$num_words" ] ; do
+    case "${hint}" in
+
+      --task|-t)
+        local tasks
+        readarray -t tasks < <(_utm_list)
+
+        # suggest task completions
+        if [ "$((next_loc + 2))" == "$num_words" ]; then
+          _utm_suggest "${words[$next_loc + 1]}" "${tasks[*]}" ""
+          return $?
+        fi
+
+        # check if task name is valid
+        if ! _utm_in_array "${words[$next_loc + 1]}" "${tasks[@]}"; then
+          return 1;
+        fi
+
+        task="${words[$next_loc + 1]}" 
+
+        # skip the next word (task name)
+        (("next_loc = $next_loc + 2"))
+        hint=${words[$next_loc]}
+        continue;;
+
+      --name|-n)
+        local builds
+        readarray -t builds < <(_utm_build_list_names "$task")
+
+        # suggest build completions
+        if [ "$((next_loc + 2))" == "$num_words" ]; then
+          _utm_suggest "${words[$next_loc + 1]}" "${builds[*]}" ""
+          return $?
+        fi
+
+        build_name="${words[$next_loc + 1]}" 
+
+        # skip the next word (build name)
+        (("next_loc = $next_loc + 2"))
+        hint=${words[$next_loc]}
+        continue;;
+
+      --python|-p)
+
+        # suggest task completions
+        if [ "$((next_loc + 2))" == "$num_words" ]; then
+          _utm_suggest "${words[$next_loc + 1]}" "${_UTM_PYTHON_VERSIONS[*]}" ""
+          return $?
+        fi
+
+        # check if python version is valid
+        if ! _utm_in_array "${words[$next_loc + 1]}" "${_UTM_PYTHON_VERSIONS[@]}"; then
+          return 1;
+        fi
+
+        # skip the next word (python version)
+        (("next_loc = $next_loc + 2"))
+        hint=${words[$next_loc]}
+        continue;;
+
+      --log-level|-l)
+
+        # suggest task completions
+        if [ "$((next_loc + 2))" == "$num_words" ]; then
+          _utm_suggest "${words[$next_loc + 1]}" "${_UTM_LOG_LEVELS[*]}" ""
+          return $?
+        fi
+
+        # check if python version is valid
+        if ! _utm_in_array "${words[$next_loc + 1]}" "${_UTM_LOG_LEVELS[@]}"; then
+          return 1;
+        fi
+
+        # skip the next word (log level)
+        (("next_loc = $next_loc + 2"))
+        hint=${words[$next_loc]}
+        continue;;
+
+      --job|-j)
+        local jobs
+        readarray -t jobs < <(_utm_job_list "$task")
+
+        # suggest task completions
+        if [ "$((next_loc + 2))" == "$num_words" ]; then
+          _utm_suggest "${words[$next_loc + 1]}" "${jobs[*]}" ""
+          return $?
+        fi
+
+        # check if python version is valid
+        if ! _utm_in_array "${words[$next_loc + 1]}" "${jobs[@]}"; then
+          return 1;
+        fi
+
+        # skip the next word (log level)
+        (("next_loc = $next_loc + 2"))
+        hint=${words[$next_loc]}
+        continue;;
+
+    esac
+    #
+    # if its not one of the flags there is something wrong ... abort
+    if ! _utm_in_array "$hint" "${_UTM_RUN_FLAGS[@]}"; then
+      return 1
+    fi
+
+    # take up the next word
+    (("next_loc = $next_loc + 1"))
+    hint=${words[$next_loc]}
+
+  done
+
+  _utm_suggest "${hint}" "${_UTM_RUN_FLAGS[*]}" "${_UTM_RUN_FLAGS[*]}"
 }
 
 
