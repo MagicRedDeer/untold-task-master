@@ -20,7 +20,7 @@ _utm_build_add() {
   local sanitized
   sanitized=$(_utm_sanitize "$build_name")
   if [ "$build_name" != "$sanitized" ]; then
-    _utm_log_error "'$build_name' is not a good build name ... try '${sanitized:-name}'"
+    _utm_log_error "'$build_name' is not a good build name ... maybe try '${sanitized:-test_build}'"
     return 1
   fi
 

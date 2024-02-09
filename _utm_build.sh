@@ -19,7 +19,10 @@ _UTM_BUILD_FLAGS=(
 
 _UTM_BUILD_COMMAND=build
 
+
 source "$_UTM_DIRECTORY/_utm_build_add.sh"
+source "$_UTM_DIRECTORY/_utm_build_list.sh"
+
 
 _utm_build_completions () {
   local words=("$@")
@@ -44,7 +47,7 @@ _utm_build_completions () {
 
       --task|-t)
         local tasks
-        readarray -t tasks < <(_utm_list --retired)
+        readarray -t tasks < <(_utm_list)
 
         # suggest task completions
         if [ "$((next_loc + 2))" == "$num_words" ]; then
@@ -107,9 +110,9 @@ _utm_build_usage() {
   _utm_echos "$s" 
   _utm_echos "$s" "$_UTM_BASE_COMMAND $_UTM_BUILD_COMMAND flags:"
   _utm_echos "$s" "---------------"
-  _utm_echos "$s" --help -h
-  _utm_echos "$s" --task "<task>"
-  _utm_echos "$s" --name "<name>"
+  _utm_echos "$s" "--help|-h"
+  _utm_echos "$s" "--task|-t" "<task>"
+  _utm_echos "$s" "--name|n" "<name>"
   _utm_echos "$s" 
   _utm_echos "$s" "$_UTM_BASE_COMMAND $_UTM_BUILD_COMMAND commands:"
   _utm_echos "$s" "---------------"
@@ -223,23 +226,6 @@ _utm_build_remove_completions() {
 
 _utm_build_remove() {
   echo "utm build remove ... placeholder with args: $*"
-}
-
-
-_utm_build_list() {
-  local task=$1
-
-  local task_build_dir
-  if ! task_build_dir=$(_utm_build_task_build_dir_ensure "$task"); then
-    return 1
-  fi
-
-  local build_dir
-  for build_dir in "$task_build_dir"/*; do
-    if [[ -d "$build_dir" || -h "$build_dir" ]]; then
-      basename "$build_dir"
-    fi
-  done
 }
 
 
