@@ -14,7 +14,29 @@ Basic Usage
 
 ::
 
-  > utm <command> <options>
+  > utm -h 
+
+  Usage:
+  ======
+  utm [--verbose|-v|--help|-h] <command> <options>
+
+  Valid commands:
+  ---------------
+  create
+  remove
+  activate
+  retire
+  revive
+  active
+  list
+  repo
+  config
+  dir
+  cd
+  build
+  run
+  attach
+
 
 Concepts
 ========
@@ -82,7 +104,6 @@ This command creates a new task. The task is created live and made active.
 
 * Task of the given name should not exist otherwise it should Error out
 * No completions required
-* Optional: Add completions for words such as PIPE- PIPEPR- UTD-
 
 ::
 
@@ -106,7 +127,7 @@ Retire the provided task. It will not show up in activate completions and
 live task lists. It will not longer be possible to make the task active
 unless revived using the `utm revive` command.
 
-* Provided task should exist and also be active
+* Provided task should exist and also be live
 * Completions provided with live tasks only
 
 utm revive
@@ -152,33 +173,33 @@ refer to the currently active task unless specified otherwise using the
 For all commands mentioned below the `-f` flag will be completed with live
 tasks.
 
-utm package
+utm repo
 -----------
 
-Command for adding and removal of packages inside the task.  
+Command for adding and removal of repos inside the task.  
 
-utm package add
-+++++++++++++++
+utm repo add
+++++++++++++
 
-It will add the package to a corresponding lionfish environment and as well as
+It will add the repo to a corresponding lionfish environment and as well as
 clone the concerned repository in the appropriate location inside the task. It
 will also use lionfish to generate `pipeline-config` json file as well.
 
 Completion provided for all possible names of the repositories
-Should be able to take multiple package names
+Should be able to take multiple repo names
 
-utm package rm
+utm repo remove
 +++++++++++++++
 
-It will remove the package from a corresponding lionfish environment and as
+It will remove the repo from a corresponding lionfish environment and as
 well as remove the clone of the concerned repository from the appropriate
 location inside the task. It will also use lionfish to generate
 `pipeline-config` json file as well.
 
-Completion provided from all the existing packages
-Should be able to take multiple package names
+Completion provided from all the existing repos
+Should be able to take multiple repo names
 
-utm package list
+utm repo list
 ++++++++++++++++
 
 It will list all packages command between lionfish and clones
@@ -199,71 +220,40 @@ The following flags are acceptable:
 
   > utm build -n test_build
 
---deploy or -d
+[TODO]
+--deploy or -d 
   This will deploy the **latest** or the provided build to the given directory
   location.
 
 ::
 
-  > utm build -d /software/installed/Temporary/ -n latest
+  > utm build -d /software/installed/Temporary/ -n test_build
 
 utm run
 -------
 
 Run the provided command in the given build. If no build is provided it
-defaults to the **live** build. Uses lionfish under the hood!
+defaults to the **live** build.
 
 
 The following flags are accepted:
 
---build or -b
+--name or -n
   The name of the build to run with. Completed with all existing build names.
+
+--python or -p
+  The version of python setup in the environment
+
+--job or -j
+  cd to the provided job name before execution
 
 ::
 
-  > utm run --build my_build "stem-ingest -e"
-
-utm repo
----------
-
-Command for adding and removing repo clones to the task
-
-utm repo add
-+++++++++++++++
-
-It will clone the package to the appropriate directory
-
-Completion provided for all possible names of the repositories
-Should be able to take multiple package names
-
-utm repo rm
-+++++++++++++++
-It will delete the clone
-
-Completion provided from all the existing repos
-Should be able to take multiple package names
-
-utm repo list
-++++++++++++++++
-
-It will list all packages cloned in the task
-
-
-utm lf
--------
-Wraps lf for the current task
-
-utm pipeline-config
---------------------
-For writing out pipeline-config files
-
-utm tmux
---------
-For management of tmux session related to the task
+  > utm run --job untold_pipeAlpha_10395 --name test_build stem-ingest -e
 
 utm attach
 ----------
-alias for utm tmux attach
+For attaching a tmux session for the task
 
 utm dir
 --------
