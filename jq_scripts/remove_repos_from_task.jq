@@ -1,7 +1,5 @@
 #!/usr/bin/jq --from-file
 
-# save main dict to alias
-
 . + {
   "repos": [
      try .repos[]

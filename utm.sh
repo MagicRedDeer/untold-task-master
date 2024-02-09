@@ -2,7 +2,9 @@
 UTM_TASKDIR=${UTM_TASKDIR:-"$HOME/Workspace/UTM/Tasks"}
 UTM_BUILD_DIR=${UTM_BUILD_DIR:-"$HOME/Workspace/UTM/Builds"}
 
+
 _UTM_BASE_COMMAND=utm
+
 
 _UTM_COMMANDS=(
   "create" "remove" "activate"
@@ -14,6 +16,7 @@ _UTM_COMMANDS=(
   "attach"
 )
 
+
 _UTM_VERBOSE=
 _UTM_FLAGS=(
   # for completions
@@ -21,8 +24,10 @@ _UTM_FLAGS=(
   "--help" "-h"
 )
 
+
 _UTM_DIRECTORY=$(realpath "${BASH_SOURCE[0]}")
 _UTM_DIRECTORY=$(dirname "$_UTM_DIRECTORY")
+
 
 source "$_UTM_DIRECTORY/_utm_utils.sh"
 source "$_UTM_DIRECTORY/_utm_create.sh"
@@ -35,9 +40,11 @@ source "$_UTM_DIRECTORY/_utm_revive.sh"
 source "$_UTM_DIRECTORY/_utm_repo.sh"
 source "$_UTM_DIRECTORY/_utm_build.sh"
 source "$_UTM_DIRECTORY/_utm_run.sh"
+source "$_UTM_DIRECTORY/_utm_attach.sh"
 source "$_UTM_DIRECTORY/_utm_lf.sh"
 source "$_UTM_DIRECTORY/_utm_pipeline.sh"
 source "$_UTM_DIRECTORY/_utm_json.sh"
+
 
 function _utm_is_valid_command() {
   local delimiter=" "
@@ -92,6 +99,9 @@ function _utm_completions() {
         return $?;;
       "run")
         readarray -t COMPREPLY < <(_utm_run_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
+        return $?;;
+      "attach")
+        readarray -t COMPREPLY < <(_utm_attach_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
     esac
 
@@ -226,6 +236,11 @@ function utm() {
     "run")
       shift
       _utm_run "$@"
+      return $?
+      ;;
+    "attach")
+      shift
+      _utm_attach "$@"
       return $?
       ;;
   esac
