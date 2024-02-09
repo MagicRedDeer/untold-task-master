@@ -36,3 +36,17 @@ _utm_build_list() {
     fi
   done
 }
+
+_utm_build_list_names() {
+  local task=$1
+  local builds
+
+  readarray -t builds < <(_utm_build_list "$task" "-l")
+
+  local name=
+  for name in "${builds[@]}"; do
+    if ! _utm_in_array "$name" "${_UTM_FORBIDDEN_BUILD_NAMES[@]}" ; then
+      echo "$name"
+    fi
+  done
+}

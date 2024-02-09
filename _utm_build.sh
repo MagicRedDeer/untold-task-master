@@ -69,7 +69,7 @@ _utm_build_completions () {
 
       --name|-n)
         local builds
-        readarray -t builds < <(_utm_build_list "$task")
+        readarray -t builds < <(_utm_build_list_names "$task")
 
         # suggest build completions
         if [ "$((next_loc + 2))" == "$num_words" ]; then
