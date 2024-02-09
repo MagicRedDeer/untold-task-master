@@ -100,6 +100,7 @@ _utm_run () {
     fi
     _utm_log_debug "python version is: '$python_version'"
   fi
+  _utm_log_debug "python version is: '$python_version'"
 
   local task_builds
   readarray -t task_builds < <(_utm_build_list "$task")
@@ -108,31 +109,58 @@ _utm_run () {
     return 1
   fi
 
-  local jobs
-  readarray -t jobs < <(_utm_job_list)
-  if ! _utm_in_array "$job_name" "${jobs[@]}" ; then
-    _utm_log_error "invalid job name: '$job_name' !"
-    return 1
+  if [ -n "$job_name" ]; then
+    local jobs
+    readarray -t jobs < <(_utm_job_list)
+    if ! _utm_in_array "$job_name" "${jobs[@]}" ; then
+      _utm_log_error "invalid job name: '$job_name' !"
+      return 1
+    fi
   fi
 
-  _utm_run_perform "$task" "$build_name" "$python_version" "$log_level" "$@"
+  _utm_run_perform "$task" "$build_name" "$python_version" "$log_level" "$job_name" "$@"
 }
 
 
 _utm_run_perform () (
   local task=$1
   local build_name=${2:-live}
-  local python_version=${3:-"3.7.10"}
+  local required_py_version=${3:-"3.7.10"}
   local log_level=${4:-"info"}
-  shift 4 
+  local job_name=${5:-""}
+  shift 5 
+
+  _utm_log_debug
 
   local UNTOLD_DEV_PIPELINE_ROOT
-  UNTOLD_DEV_PIPELINE_ROOT=$(readlink "$UTM_BUILD_DIR/$task/$build_name")
+  UNTOLD_DEV_PIPELINE_ROOT="$UTM_BUILD_DIR/$task/$build_name"
+
+  _utm_log_debug UNTOLD_DEV_PIPELINE_ROOT="$UNTOLD_DEV_PIPELINE_ROOT"
   export UNTOLD_DEV_PIPELINE_ROOT
-  source /users/.default/untold_shell/untold_env/untold_env \
-    true true true "" "" "" "$python_version"
+
+  if [ -n "$job_name" ]; then
+    _utm_log_debug cd "/jobs/$job_name"
+    cd "/jobs/$job_name" || exit 1
+  fi
+  _utm_log_debug source /users/.default/untold_shell/untold_env/untold_env true true true "" "" "" "$required_py_version"
+  source /users/.default/untold_shell/untold_env/untold_env true true true "" "" "" "$required_py_version"
+
+  _utm_log_debug UNTOLD_LOGGING_LEVEL="$log_level"
   export UNTOLD_LOGGING_LEVEL=$log_level
-  "$@"
+
+  local command=
+  local val
+
+  for val in "$@"; do
+    if [ -n "$command" ]; then
+      command="$command \"$val\""
+    else
+      command="\"$val\""
+    fi
+  done
+
+  _utm_log_debug executing "$command" ...
+  eval "$command"
 )
 
 
