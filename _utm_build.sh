@@ -32,6 +32,7 @@ _utm_build_completions () {
   local task=
   local build_name=
 
+  task=$(_utm_active)
   hint=${words[$next_loc]}
 
   while [ "$((next_loc + 1))" -lt "$num_words" ] ; do
