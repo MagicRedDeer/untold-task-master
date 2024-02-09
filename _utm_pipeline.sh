@@ -3,9 +3,9 @@
 _UTM_PIPELINE_DIRNAME=.pipeline
 
 _UTM_PYTHON_VERSIONS=(
-  "2.7.12"
   "3.7.10"
   "3.9.16"
+  "3.10.13"
 )
 
 _utm_pipeline_ensure_base_dir() {

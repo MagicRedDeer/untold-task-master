@@ -64,44 +64,34 @@ function _utm_completions() {
     # if the next word is one of the commands kick it down the line
     case $hint in
       "activate")
-        # shellcheck disable=SC2207
-        COMPREPLY=($(_utm_activate_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        readarray -t COMPREPLY < <(_utm_activate_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "dir")
-        # shellcheck disable=SC2207
-        COMPREPLY=($(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        readarray -t COMPREPLY < <(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "cd")
-        # shellcheck disable=SC2207
-        COMPREPLY=($(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        readarray -t COMPREPLY < <(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "remove")
-        # shellcheck disable=SC2207
-        COMPREPLY=($(_utm_remove_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        readarray -t COMPREPLY < <(_utm_remove_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "list")
-        # shellcheck disable=SC2207
-        COMPREPLY=($(_utm_list_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        readarray -t COMPREPLY < <(_utm_list_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "retire")
-        # shellcheck disable=SC2207
-        COMPREPLY=($(_utm_retire_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        readarray -t COMPREPLY < <(_utm_retire_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "revive")
-        # shellcheck disable=SC2207
-        COMPREPLY=($(_utm_revive_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        readarray -t COMPREPLY < <(_utm_revive_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "repo")
-        # shellcheck disable=SC2207
-        COMPREPLY=($(_utm_repo_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        readarray -t COMPREPLY < <(_utm_repo_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "build")
-        # shellcheck disable=SC2207
-        COMPREPLY=($(_utm_build_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        readarray -t COMPREPLY < <(_utm_build_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "run")
-        # shellcheck disable=SC2207
-        COMPREPLY=($(_utm_run_completions "${COMP_WORDS[@]:(($next_loc + 1))}"))
+        readarray -t COMPREPLY < <(_utm_run_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
     esac
 
@@ -117,8 +107,7 @@ function _utm_completions() {
   done
 
   # we have reached the last word provide completion now
-  # shellcheck disable=SC2207
-  COMPREPLY=($(_utm_suggest "$hint" "${_UTM_COMMANDS[*]}" "${_UTM_FLAGS[*]}"))
+  readarray -t COMPREPLY < <(_utm_suggest "$hint" "${_UTM_COMMANDS[*]}" "${_UTM_FLAGS[*]}")
   return
 
 }

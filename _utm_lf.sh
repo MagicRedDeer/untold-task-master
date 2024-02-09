@@ -86,8 +86,7 @@ _utm_lf_package_add () {
   shift
   local repos=("$@")
 
-  # shellcheck disable=2207
-  repos=($(_utm_filter_repos "${repos[@]}"))
+  readarray -t repos < <(_utm_filter_repos "${repos[@]}")
 
   _utm_lf_ensure "$task"
   local repo
@@ -134,8 +133,7 @@ _utm_lf_package_remove () {
   shift
   local repos=("$@")
 
-  # shellcheck disable=2207
-  repos=($(_utm_filter_repos "${repos[@]}"))
+  readarray -t repos < <(_utm_filter_repos "${repos[@]}")
 
   _utm_lf_ensure "$task"
   local repo

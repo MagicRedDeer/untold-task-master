@@ -9,6 +9,7 @@ _UTM_RUN_FLAGS=(
   "--name" "-n"
   "--python" "-p"
   "--log-level" "-l"
+  "--job" "-j"
 )
 
 _UTM_LOG_LEVELS=(
@@ -34,6 +35,7 @@ _utm_run () {
   local build_name=
   local log_level=
   local python_version=
+  local job_name
 
   while [[ "$arg" =~ ^- ]]; do
     case $arg in
@@ -52,6 +54,10 @@ _utm_run () {
       --python|-p)
         shift
         python_version=$1
+        ;;
+      --job|-j)
+        shift
+        job_name=$1
         ;;
       --help|-h)
         _utm_run_usage "info"
@@ -94,9 +100,15 @@ _utm_run () {
     _utm_log_debug "python version is: '$python_version'"
   fi
 
-  local task_builds=($(_utm_build_list "$task"))
+  local task_builds=( $(_utm_build_list "$task") )
   if ! _utm_in_array "$build_name" "${task_builds[@]}" ; then
     _utm_log_error "invalid build name: '$build_name'"
+    return 1
+  fi
+
+  local jobs=( $(_utm_job_list) )
+  if ! _utm_in_array "$job_name" "${jobs[@]}" ; then
+    _utm_log_error "invalid job name: '$job_name' !"
     return 1
   fi
 
@@ -145,4 +157,12 @@ _utm_run_usage() {
     _utm_echos "$s" "$valid_command"
   done
   _utm_echos "$s"
+}
+
+
+_utm_job_list() {
+  local job
+  for job in /jobs/*; do
+    basename "$job"
+  done
 }

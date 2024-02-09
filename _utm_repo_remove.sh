@@ -9,8 +9,8 @@ _utm_repo_remove_completions() {
   shift
   local words=("$@")
 
-  # shellcheck disable=SC2207
-  local repos=($(_utm_repo_list "$task"))
+  local repos
+  readarray -t repos < <(_utm_repo_list "$task")
   _utm_suggest "${words[-1]}" "${repos[*]}" "${_UTM_REPO_REMOVE_FLAGS[*]}"
 }
 
@@ -22,8 +22,8 @@ _utm_repo_remove_verify() {
 
   _utm_log_debug "Verifying ${#repos[@]} repositories ..."
 
-  # shellcheck disable=SC2207
-  local task_repos=($(_utm_repo_list "$task"))
+  local task_repos
+  readarray -t task_repos < <(_utm_repo_list "$task")
 
   for repo in "${repos[@]}"; do
     if ! _utm_in_array "$repo" "${task_repos[@]}"; then

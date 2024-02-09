@@ -88,7 +88,7 @@ _utm_in_array() {
 }
 
 _utm_log_debug() {
-  [ -z "$_UTM_VERBOSE" ] || echo "DEBUG:" "$@" 
+  [ -z "$_UTM_VERBOSE" ] || >&2 echo "DEBUG:" "$@" 
 }
 
 _utm_log_error() {
@@ -96,7 +96,7 @@ _utm_log_error() {
 }
 
 _utm_log_info() {
-  echo "$@"
+  >&2 echo "$@"
 }
 
 _utm_echos() {

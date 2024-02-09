@@ -44,8 +44,7 @@ _utm_build_completions () {
 
       --task|-t)
         local tasks
-        # shellcheck disable=SC2207
-        tasks=($(_utm_list))
+        readarray -t tasks < <(_utm_list --retired)
 
         # suggest task completions
         if [ "$((next_loc + 2))" == "$num_words" ]; then
@@ -67,8 +66,7 @@ _utm_build_completions () {
 
       --name|-n)
         local builds
-        # shellcheck disable=SC2207
-        builds=($(_utm_build_list "$task"))
+        readarray -t builds < <(_utm_build_list "$task")
 
         # suggest build completions
         if [ "$((next_loc + 2))" == "$num_words" ]; then

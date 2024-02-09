@@ -10,8 +10,8 @@ _utm_remove_completions () {
 
   if [[ "$num_words" -eq 1  || ( "$num_words" -eq 2 &&  "${words[0]}" =~ ^- )  ]]; then
 
-    # shellcheck disable=SC2207
-    local tasks=($(_utm_list))
+    local tasks
+    readarray -t tasks < <(_utm_list --all)
     _utm_suggest "${words[-1]}" "${tasks[*]}" "${_UTM_REMOVE_FLAGS[*]}"
 
   fi

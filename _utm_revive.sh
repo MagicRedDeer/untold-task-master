@@ -6,8 +6,8 @@ _utm_revive_completions () {
 
   if [ "$num_words" -eq 1 ]; then
 
-    # shellcheck disable=SC2207
-    local tasks=($(_utm_list --retired))
+    local tasks
+    readarray -t tasks < <(_utm_list --retired)
     _utm_suggest "${words[0]}" "${tasks[*]}" ""
 
   fi

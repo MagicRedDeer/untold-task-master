@@ -9,8 +9,8 @@ _utm_activate_completions() {
 
   if [ "$num_words" -eq 1 ]; then
 
-    # shellcheck disable=SC2207
-    local tasks=($(_utm_list))
+    local tasks
+    readarray -t tasks < <(_utm_list)
     _utm_suggest "${words[0]}" "${tasks[*]}" ""
 
   fi

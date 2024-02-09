@@ -39,8 +39,7 @@ _utm_repo_completions() {
 
       --task|-t)
         local tasks
-        # shellcheck disable=SC2207
-        tasks=($(_utm_list))
+        readarray -t tasks < <(_utm_list)
 
         # suggest task completions
         if [ "$((next_loc + 2))" == "$num_words" ]; then
