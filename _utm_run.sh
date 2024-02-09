@@ -26,6 +26,7 @@ _UTM_RUN_COMMAND=run
 
 _utm_run_completions () {
   local words=("$@")
+  echo "${words[@]}"
 }
 
 
@@ -100,13 +101,15 @@ _utm_run () {
     _utm_log_debug "python version is: '$python_version'"
   fi
 
-  local task_builds=( $(_utm_build_list "$task") )
+  local task_builds
+  readarray -t task_builds < <(_utm_build_list "$task")
   if ! _utm_in_array "$build_name" "${task_builds[@]}" ; then
     _utm_log_error "invalid build name: '$build_name'"
     return 1
   fi
 
-  local jobs=( $(_utm_job_list) )
+  local jobs
+  readarray -t jobs < <(_utm_job_list)
   if ! _utm_in_array "$job_name" "${jobs[@]}" ; then
     _utm_log_error "invalid job name: '$job_name' !"
     return 1

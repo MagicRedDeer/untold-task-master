@@ -217,7 +217,7 @@ _utm_build() {
 
 
 _utm_build_remove_completions() {
-  echo "nothing goes here" $@
+  echo "nothing goes here" "$@"
 }
 
 

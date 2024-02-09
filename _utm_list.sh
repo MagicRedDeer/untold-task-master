@@ -16,8 +16,6 @@ _utm_list_completions() {
 
 _utm_list() {
   local flag=$1
-  local task_status
-  local name
 
   if [ -n "$flag" ]; then
     if ! _utm_in_array "$flag" "${_UTM_LIST_FLAGS[@]}"; then

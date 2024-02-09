@@ -34,7 +34,6 @@ _utm_create() {
 
 
   local existing_tasks
-  existing_tasks=($(_utm_list))
   readarray -t existing_tasks < <(_utm_list)
   if  _utm_in_array "$task_name" "${existing_tasks[@]}"; then
     _utm_log_error "A task already exists with the name of '$task_name'!"
