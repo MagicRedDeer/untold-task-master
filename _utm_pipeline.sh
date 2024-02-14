@@ -32,7 +32,7 @@ _utm_pipeline_ensure_pipeline_dir () {
 
   local pipeline_dir
 
-  if ! pipeline_dir="$(_utm_pipeline_ensure_base_dir "$task")/$os/python-$py_ver/"
+  if ! pipeline_dir="$(_utm_pipeline_ensure_base_dir "$task")/$os/python-$py_ver"
   then
     return 1
   fi
@@ -97,7 +97,7 @@ _utm_pipeline_create_repo_links() {
     local link="$pipeline_dir"/"$repo"
 
     _utm_log_debug "Creating link $link -> $repo_location ..."
-    if ! ln -s -T "$repo_location" "$link"; then
+    if ! ln -s -f -T "$repo_location" "$link"; then
       _utm_log_error "Failed to create link: $link"
     fi
   done
