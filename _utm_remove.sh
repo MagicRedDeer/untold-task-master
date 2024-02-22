@@ -2,14 +2,14 @@
 
 _UTM_REMOVE_FLAGS=(
   --yes -y
-  --remove-builds -b
+  --keep-builds -b
 )
 
 _utm_remove_completions () {
   local words=("$@")
   local num_words=${#words[@]}
 
-  if [[ "$num_words" -eq 1  || ( "$num_words" -eq 2 &&  "${words[0]}" =~ ^- )  ]]; then
+  if [[ "$num_words" -eq 1  || ( "$num_words" -le 3 &&  "${words[0]}" =~ ^- )  ]]; then
 
     local tasks
     readarray -t tasks < <(_utm_list --all)
@@ -22,13 +22,13 @@ _utm_remove () {
   local arg=$1
 
   local confirm=yes
-  local remove_builds=
+  local remove_builds=yes
   while [[ "$arg" =~ ^- ]]; do
     case $arg in
-      --yes|-y)
+      "--yes"|"-y")
         confirm=;;
-      --remove-builds|-b)
-        remove_builds=yes;;
+      "--keep-builds"|"-b")
+        remove_builds=;;
       *)
         _utm_log_error "Invalid flag '$arg' !"
         _utm_usage "error"

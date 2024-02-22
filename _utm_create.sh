@@ -12,7 +12,41 @@ _UTM_FORBIDDEN_TASK_NAMES=(
   "task" "Task"
 )
 
+_UTM_CREATE_FLAGS=(
+  "--activate" "-a"
+)
+
+
+_utm_create_completions () {
+  local words=("$@")
+  local num_words=${#words[@]}
+
+  if [[ "$num_words" -eq 1  || ( "$num_words" -eq 2 &&  "${words[0]}" =~ ^- )  ]]; then
+
+    _utm_suggest "${words[-1]}" "${_UTM_CREATE_FLAGS[*]}" "${_UTM_CREATE_FLAGS[*]}"
+
+  fi
+}
+
+
 _utm_create() {
+  local arg=$1
+
+  local activate=
+  while [[ "$arg" =~ ^- ]]; do
+    case $arg in
+      --activate|-a)
+        activate=yes;;
+      *)
+        _utm_log_error "Invalid flag '$arg' !"
+        _utm_usage "error"
+        return 1
+        ;;
+    esac
+    shift
+    arg=$1
+  done
+
   local task_name="${1}"
 
   if [ -z "$task_name" ]; then
@@ -56,5 +90,6 @@ _utm_create() {
   _utm_json_initialize "$task_name" "$json_file_path"
   _utm_pipeline_ensure_base_dir "$task_dir" > /dev/null
 
-  _utm_log_info "A task called '$task_name' was created"
+  _utm_log_info "A task named '$task_name' was created"
+  [[ -n $activate ]] && _utm_activate_perform "$task_name"
 }

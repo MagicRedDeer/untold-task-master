@@ -49,6 +49,7 @@ _utm_activate_perform() {
   local task_dir="$UTM_TASKDIR/$task_name"
   _utm_create_pipeline_link "$task_name"
   _utm_create_active_task_link "$task_dir"
+  _utm_log_info "Task '$task_name' is now active!"
 }
 
 _utm_create_active_task_link () {

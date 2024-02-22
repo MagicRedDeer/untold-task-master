@@ -70,6 +70,9 @@ function _utm_completions() {
 
     # if the next word is one of the commands kick it down the line
     case $hint in
+      "create")
+        readarray -t COMPREPLY < <(_utm_create_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
+        return $?;;
       "activate")
         readarray -t COMPREPLY < <(_utm_activate_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
