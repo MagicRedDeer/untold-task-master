@@ -4,6 +4,7 @@
 _UTM_BUILD_COMMANDS=(
   "add"
   "remove"
+  "remove_all"
   "dir"
   "ll"
   "list"
@@ -206,11 +207,10 @@ _utm_build() {
       return $?
       ;;
      
-    # "remove")
-    #   shift
-    #   _utm_build_remove "$task" "$build_name" "$@"
-    #   return $?
-    #   ;;
+    "remove_all")
+      _utm_build_remove_all "$task" 
+      return $?
+      ;;
 
     "list")
       shift
@@ -250,3 +250,13 @@ _utm_build_task_build_dir_ensure() {
   echo "$task_build_dir"
 }
 
+_utm_build_remove_all() {
+  local task=$1
+  local task_build_dir
+  if ! task_build_dir=$(_utm_build_task_build_dir_ensure "$task"); then
+    return 1
+  fi
+  _utm_log_debug "removing directory '$task_build_dir' ..."
+  rm -rf "$task_build_dir" > /dev/null
+  return $?
+}

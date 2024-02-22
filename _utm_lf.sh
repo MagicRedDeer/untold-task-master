@@ -25,7 +25,8 @@ _utm_lf_remove() {
   local task=$1
   local lf_env_file="$_UTM_LF_SESSION_DIR/$task.json" 
   if [ -f "$lf_env_file" ]; then
-    rm lf_env_file > /dev/null
+    _utm_log_debug rm "$lf_env_file"
+    rm "$lf_env_file" > /dev/null
     return $?
   fi
   return 0

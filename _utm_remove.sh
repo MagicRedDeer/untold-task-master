@@ -2,6 +2,7 @@
 
 _UTM_REMOVE_FLAGS=(
   --yes -y
+  --remove-builds -b
 )
 
 _utm_remove_completions () {
@@ -21,10 +22,13 @@ _utm_remove () {
   local arg=$1
 
   local confirm=yes
+  local remove_builds=
   while [[ "$arg" =~ ^- ]]; do
     case $arg in
       --yes|-y)
         confirm=;;
+      --remove-builds|-b)
+        remove_builds=yes;;
       *)
         _utm_log_error "Invalid flag '$arg' !"
         _utm_usage "error"
@@ -65,6 +69,8 @@ _utm_remove () {
 
   local task_dir="$UTM_TASKDIR/$task_name"
   rm -rf "$task_dir"
+
+  [[ -n "$remove_builds" ]] && _utm_build_remove_all "$task_name"
   _utm_lf_remove "$task_name"
 
   _utm_log_info "Task '$task_name' was removed!"
