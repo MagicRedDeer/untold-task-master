@@ -101,7 +101,7 @@ _utm_json_task_by_status () {
 
   cmd="$cmd --from-file \"$_UTM_JQ_SCRIPTS_DIR/tasks_by_status.jq\""
 
-  _utm_log_debug "$cmd"
+  _utm_log_debug "Executing 'jq --from-file $_UTM_JQ_SCRIPTS_DIR/tasks_by_status.jq' for '${status:-all}' tasks ..."
   eval "$cmd"
 }
 

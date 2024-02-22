@@ -10,8 +10,6 @@ _UTM_LF_VALID_PACKAGES=(
   "pipeline-config"
 )
 
-_UTM_LF_ENV_DIR="$HOME/.lionfish"
-
 
 _utm_lf_ensure() {
   local task=$1
@@ -20,6 +18,17 @@ _utm_lf_ensure() {
     _utm_log_debug "Creating lf session $task ..."
     $_UTM_LF new "$task" > /dev/null 2>&1
   fi
+  return 0
+}
+
+_utm_lf_remove() {
+  local task=$1
+  local lf_env_file="$_UTM_LF_SESSION_DIR/$task.json" 
+  if [ -f "$lf_env_file" ]; then
+    rm lf_env_file > /dev/null
+    return $?
+  fi
+  return 0
 }
 
 
@@ -165,7 +174,7 @@ _utm_lf_build() {
 
 _utm_lf_repo_list() {
   local task=$1
-  _utm_json_lf_repo_list "$_UTM_LF_ENV_DIR/$task.json"
+  _utm_json_lf_repo_list "$_UTM_LF_SESSION_DIR/$task.json"
 }
 
 

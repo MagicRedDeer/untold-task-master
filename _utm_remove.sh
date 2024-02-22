@@ -65,6 +65,7 @@ _utm_remove () {
 
   local task_dir="$UTM_TASKDIR/$task_name"
   rm -rf "$task_dir"
+  _utm_lf_remove "$task_name"
 
   _utm_log_info "Task '$task_name' was removed!"
 }

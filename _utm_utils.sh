@@ -4,6 +4,7 @@
 _utm_task_is_valid() {
   local task="$1"
   local tasks
+  _utm_log_debug "verifying task validity for '$task' ..."
   tasks=$(_utm_list --all)
   echo "$tasks" | tr " " '\n' | grep -F -q -x "$task"
 }
