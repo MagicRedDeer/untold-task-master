@@ -16,7 +16,7 @@ _UTM_COMMANDS=(
   "list" "ls"
   "repo" "package"
   "dir" "homedir"
-  "cd" "chdir"
+  "cd" "chdir" "pushd"
   "build"
   "run"
   "attach"
@@ -87,6 +87,9 @@ function _utm_completions() {
         readarray -t COMPREPLY < <(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "cd"|"chdir")
+        readarray -t COMPREPLY < <(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
+        return $?;;
+      "pushd")
         readarray -t COMPREPLY < <(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "remove"|"rm"|"delete"|"del")
@@ -206,6 +209,11 @@ function utm() {
       _utm_cd "$@"
       return $?
       ;;
+    "pushd")
+      shift
+      _utm_pushd "$@"
+      return $?
+      ;;
     "active"|"current")
       shift
       _utm_active "$@"
@@ -246,13 +254,15 @@ function utm() {
       _utm_attach "$@"
       return $?
       ;;
+    "config")
+      _utm_log_error "$_UTM_BASE_COMMAND $command NOT IMPLEMENTED"
+      return 1
+      ;;
     *)
       _utm_log_error "Invalid command ... '$command'"
       _utm_usage "error"
       return 1
   esac
-
-  _utm_log_error "$_UTM_BASE_COMMAND $command NOT IMPLEMENTED"
 }
 
 complete -F _utm_completions utm
