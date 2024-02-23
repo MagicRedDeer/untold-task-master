@@ -7,13 +7,20 @@ _UTM_BASE_COMMAND=utm
 
 
 _UTM_COMMANDS=(
-  "create" "remove" "activate"
-  "retire" "revive"
-  "active" "list"
-  "repo" "config"
-  "dir" "cd"
-  "build" "run"
+  "create"
+  "remove" "rm" "delete"
+  "activate" "make_active"
+  "retire"
+  "revive"
+  "active" "current"
+  "list" "ls"
+  "repo" "package"
+  "dir" "homedir"
+  "cd" "chdir"
+  "build"
+  "run"
   "attach"
+  "config"
 )
 
 
@@ -70,22 +77,22 @@ function _utm_completions() {
 
     # if the next word is one of the commands kick it down the line
     case $hint in
-      "create")
+      "create"|"c")
         readarray -t COMPREPLY < <(_utm_create_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
-      "activate")
+      "activate"|"make_active"|"ma")
         readarray -t COMPREPLY < <(_utm_activate_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
-      "dir")
+      "dir"|"homedir")
         readarray -t COMPREPLY < <(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
-      "cd")
+      "cd"|"chdir")
         readarray -t COMPREPLY < <(_utm_dir_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
-      "remove")
+      "remove"|"rm"|"delete"|"del")
         readarray -t COMPREPLY < <(_utm_remove_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
-      "list")
+      "list"|"ls")
         readarray -t COMPREPLY < <(_utm_list_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
       "retire")
@@ -94,16 +101,16 @@ function _utm_completions() {
       "revive")
         readarray -t COMPREPLY < <(_utm_revive_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
-      "repo")
+      "repo"|"repos"|"package")
         readarray -t COMPREPLY < <(_utm_repo_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
-      "build")
+      "build"|"b")
         readarray -t COMPREPLY < <(_utm_build_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
-      "run")
+      "run"|"r")
         readarray -t COMPREPLY < <(_utm_run_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
-      "attach")
+      "attach"|"a")
         readarray -t COMPREPLY < <(_utm_attach_completions "${COMP_WORDS[@]:(($next_loc + 1))}")
         return $?;;
     esac
@@ -173,25 +180,18 @@ function utm() {
     return 0
   fi
 
-  if ! _utm_is_valid_command "$1"
-  then
-    _utm_log_error "Invalid command ... $command"
-    _utm_usage "error"
-    return 1
-  fi
-
   case $command in 
-    "create")
+    "create"|"c")
       shift
       _utm_create "$@"
       return $?
       ;;
-    "activate")
+    "activate"|"make_active"|"ma")
       shift
       _utm_activate "$@"
       return $?
       ;;
-    "list")
+    "list"|"ls")
       shift
       _utm_list "$@"
       return $?
@@ -201,17 +201,17 @@ function utm() {
       _utm_dir "$@"
       return $?
       ;;
-    "cd")
+    "cd"|"chdir")
       shift
       _utm_cd "$@"
       return $?
       ;;
-    "active")
+    "active"|"current")
       shift
       _utm_active "$@"
       return $?
       ;;
-    "remove")
+    "remove"|"rm"|"delete"|"del")
       shift
       _utm_remove "$@"
       return $?
@@ -226,26 +226,30 @@ function utm() {
       _utm_revive "$@"
       return $?
       ;;
-    "repo")
+    "repo"|"repos"|"package")
       shift
       _utm_repo "$@"
       return $?
       ;;
-    "build")
+    "build"|"b")
       shift
       _utm_build "$@"
       return $?
       ;;
-    "run")
+    "run"|"r")
       shift
       _utm_run "$@"
       return $?
       ;;
-    "attach")
+    "attach"|"a")
       shift
       _utm_attach "$@"
       return $?
       ;;
+    *)
+      _utm_log_error "Invalid command ... '$command'"
+      _utm_usage "error"
+      return 1
   esac
 
   _utm_log_error "$_UTM_BASE_COMMAND $command NOT IMPLEMENTED"

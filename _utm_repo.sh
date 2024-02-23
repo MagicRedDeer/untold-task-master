@@ -2,8 +2,8 @@
 
 _UTM_REPO_COMMANDS=(
   "add"
-  "remove"
-  "list"
+  "remove" "rm"
+  "list" "ls"
   "create" # TODO: add support for creating new repositories
 )
 
@@ -29,11 +29,11 @@ _utm_repo_completions() {
 
   while [ "$((next_loc + 1))" -lt "$num_words" ] ; do
     case "${hint}" in
-      add)
+      add|a)
         _utm_repo_add_completions "${words[@]:1}"
         return $?;;
 
-      remove)
+      remove|rm)
         _utm_repo_remove_completions "${task:="$(_utm_active)"}" "${words[@]:1}"
         return $?;;
 
@@ -150,19 +150,19 @@ _utm_repo() {
 
   case $command in 
 
-    "add")
+    "add"|"a")
       shift
       _utm_repo_add "$task_name" "$@"
       return $?
       ;;
 
-    "remove")
+    "remove"|"rm")
       shift
       _utm_repo_remove "$task_name" "$@"
       return $?
       ;;
 
-    "list")
+    "list"|"ls")
       shift
       _utm_repo_list "$task_name" "$@"
       return $?

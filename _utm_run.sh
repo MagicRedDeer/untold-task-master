@@ -202,6 +202,11 @@ _utm_run () {
     arg=$1
   done
 
+  if [ -z "$*" ]; then
+    _utm_log_error "Please provide a command to run!"
+    return 1
+  fi
+
   if [ -z "$task" ]; then
     _utm_log_debug "No task provided ... defaulting to active task!"
     task=$(_utm_active 2> /dev/null)

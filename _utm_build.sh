@@ -3,11 +3,11 @@
 
 _UTM_BUILD_COMMANDS=(
   "add"
-  "remove"
+  "remove" "rm"
   "remove_all"
   "dir"
   "ll"
-  "list"
+  "list" "ls"
 )
 
 
@@ -39,11 +39,11 @@ _utm_build_completions () {
   while [ "$((next_loc + 1))" -lt "$num_words" ] ; do
     case "${hint}" in
 
-      add)
+      add|a)
         _utm_build_add_completions "${task:="$(_utm_active)"}" "$build_name" "${words[@]:1}"
         return $?;;
 
-      list)
+      list|ls)
         _utm_build_list_completions "${words[@]:1}"
         return $?;;
 
@@ -191,7 +191,7 @@ _utm_build() {
 
   case $command in 
 
-    "add")
+    "add"|"a")
       shift
       _utm_build_add "$task" "$build_name" "$@"
       return $?
@@ -212,7 +212,7 @@ _utm_build() {
       return $?
       ;;
 
-    "list")
+    "list"|"ls")
       shift
       _utm_build_list "$task" "$@"
       return $?
