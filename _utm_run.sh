@@ -12,6 +12,7 @@ _UTM_RUN_FLAGS=(
   "--job" "-j"
 )
 
+
 _UTM_LOG_LEVELS=(
   notset
   debug
@@ -20,6 +21,13 @@ _UTM_LOG_LEVELS=(
   error
   critical
 )
+
+
+_UTM_RUN_PRE_COMMANDS=(
+  "source $HOME/.bashrc_user_paths"
+  "source $HOME/.bashrc_user_nvm"
+)
+
 
 _UTM_RUN_COMMAND=run
 
@@ -268,6 +276,11 @@ _utm_run_perform () (
 
   _utm_log_debug UNTOLD_LOGGING_LEVEL="$log_level"
   export UNTOLD_LOGGING_LEVEL=$log_level
+
+  local pre_command=
+  for pre_command in "${_UTM_RUN_PRE_COMMANDS[@]}"; do
+    eval "$pre_command"
+  done
 
   local command=
   local val
