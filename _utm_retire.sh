@@ -16,6 +16,11 @@ _utm_retire_completions () {
 _utm_retire () {
   local task_name=$1
 
+  if [ -z "$task_name" ]; then
+    _utm_log_error "Please provide a name for a live task!"
+    return 1
+  fi
+
   if ! _utm_task_check_live "$task_name"; then
     _utm_log_error "'$task_name' is not a live task"
     return 1
@@ -29,7 +34,7 @@ _utm_retire () {
   local json_content
   json_content=$(jq \
     '. += {"status": "retired"}' \
-    "$json_filepath") # >| "$json_filepath"
+    "$json_filepath")
   _utm_log_debug "New json content:"
   _utm_log_debug "$json_content"
 

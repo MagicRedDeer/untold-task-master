@@ -220,8 +220,8 @@ The following flags are acceptable:
 
   > utm build -n test_build
 
-[TODO]
---deploy or -d 
+
+--deploy or -d [TODO]
   This will deploy the **latest** or the provided build to the given directory
   location.
 
