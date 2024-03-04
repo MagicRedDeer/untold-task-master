@@ -90,6 +90,8 @@ _utm_create() {
   _utm_json_initialize "$task_name" "$json_file_path"
   _utm_pipeline_ensure_base_dir "$task_dir" > /dev/null
 
+  _utm_pyright_task_json_deploy "$task_name"
+
   _utm_log_info "A task named '$task_name' was created"
   [[ -n $activate ]] && _utm_activate_perform "$task_name"
 }

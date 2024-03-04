@@ -1,0 +1,10 @@
+{
+  "include": [
+    "./includes/_scrap/"
+  ],
+  "stubPath": "/users/talhaahmed/Workspace/Resources/superstubs/stubs",
+  "reportMissingModuleSource": false,
+  "pythonVersion": "3.7",
+  "pythonPlatform": "Linux",
+  "verboseOutput": true
+}

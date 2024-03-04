@@ -116,6 +116,8 @@ _utm_repo_add_single() {
 
   _utm_log_debug "$repo cloned successfully!"
 
+  _utm_pyright_repo_json_deploy "$task" "$repo"
+
   if ! pushd "$repo_location" >/dev/null 2>&1 ; then 
     _utm_log_error "Error $? encountered while pushd"
     return 1

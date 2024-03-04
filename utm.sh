@@ -51,6 +51,7 @@ source "$_UTM_DIRECTORY/_utm_attach.sh"
 source "$_UTM_DIRECTORY/_utm_lf.sh"
 source "$_UTM_DIRECTORY/_utm_pipeline.sh"
 source "$_UTM_DIRECTORY/_utm_json.sh"
+source "$_UTM_DIRECTORY/_utm_pyright.sh"
 
 
 function _utm_is_valid_command() {
