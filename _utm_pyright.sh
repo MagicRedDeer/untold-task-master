@@ -1,14 +1,15 @@
 #!/bin/bash
 
 
-_UTM_PYRIGHT_JSON_TASK="$UTM_DIR/pyright/pyright-task.json"
+_UTM_PYRIGHT_JSON_TASK="$_UTM_DIRECTORY/pyright/pyrightconfig-task.json"
+_UTM_PYRIGHT_JSON_COMMON_REPO="$_UTM_DIRECTORY/pyright/pyrightconfig-common.json"
 
 
 _utm_pyright_task_json_deploy() {
   task=$1
 
   local task_location
-  task_location="$UTM_TASK_DIR/$task/$_UTM_REPO_DIRNAME/$repo"
+  task_location="$UTM_TASKDIR/$task"
 
   if [ ! -d "$task_location" ]; then
     _utm_log_error "Task dir '$task_location' does not exist"
@@ -26,17 +27,17 @@ _utm_pyright_repo_json_deploy() {
   repo=$2
 
   local repo_location
-  repo_location="$UTM_TASK_DIR/$task/$_UTM_REPO_DIRNAME/$repo"
+  repo_location="$UTM_TASKDIR/$task/$_UTM_REPO_DIRNAME/$repo"
 
   if [ ! -d "$repo_location" ]; then
-    _utm_log_error "Task dir '$repo_location' does not exist"
+    _utm_log_error "Repo dir '$repo_location' does not exist"
     return 1
   fi
 
   local pyright_config_path="$repo_location/pyrightconfig.json"
 
   _utm_log_debug "Creating repo config at $pyright_config_path"
-  cp "$_UTM_PYRIGHT_JSON_TASK" "$pyright_config_path" > /dev/null
+  cp "$_UTM_PYRIGHT_JSON_COMMON_REPO" "$pyright_config_path" > /dev/null
 
   local exclude_file
   exclude_file="$repo_location"/.git/info/exclude
